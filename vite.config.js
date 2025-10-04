@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: proces.env.VITE_BASE_PATH || ""
+  base: proces.env.VITE_BASE_PATH || "/busquick-frontend-final"
 
   server: {
     proxy: {
