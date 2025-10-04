@@ -816,7 +816,7 @@ footer {
   opacity: 0.6;
   background: #F9FAFB;
   border-color: #E5E7EB;
-  cursor: pointer; /* Keep clickable */
+  cursor: pointer;
 }
 
 .date-button.no-buses:hover {
@@ -1322,7 +1322,7 @@ footer {
   opacity: 0.6;
   background: #F9FAFB;
   border-color: #E5E7EB;
-  cursor: pointer; /* Keep clickable */
+  cursor: pointer;
 }
 
 .enhanced-date-button.no-buses:hover {
@@ -1899,6 +1899,341 @@ footer {
   }
 }
 
+/* Media query for screens 700px and below - Remove padding, maximize space */
+@media (max-width: 700px) {
+  /* Remove body padding */
+  body {
+    padding-top: 60px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Header - minimize padding */
+  .header,
+  header,
+  .navbar,
+  .top-navigation {
+    padding: 0;
+  }
+
+  .header-container,
+  .nav-container {
+    padding: 0.5rem 0.75rem;
+    height: 60px;
+  }
+
+  /* Hero container - remove all padding and margins */
+  .hero-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem 0.5rem;
+    gap: 1.5rem;
+    border-radius: 0;
+  }
+
+  /* Hero content - remove padding */
+  .hero-content {
+    padding: 0;
+  }
+
+  /* Hero logo container - minimize margins */
+  .hero-logo-container {
+    margin-bottom: 1rem;
+  }
+
+  /* Search card - remove padding */
+  .bus-search-card,
+  .search-form-container,
+  .bus-search-wrapper,
+  .hero-content .bus-search-container,
+  .hero-content > div:last-child {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+    padding: 1rem 0.5rem;
+    margin: 0;
+    border-radius: 8px;
+  }
+
+  /* Main content - remove padding */
+  .main-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Search results header - minimal padding */
+  .search-results-header {
+    padding: 1rem 0.5rem;
+    margin: 0 0 0.5rem 0;
+    border-radius: 0;
+  }
+
+  /* Date selector container - minimal padding */
+  .date-selector-container,
+  .enhanced-date-filter-container {
+    padding: 0.75rem 0.25rem;
+    margin: 0 0 0.5rem 0;
+    border-radius: 0;
+  }
+
+  /* Enhanced date selector - minimal padding */
+  .enhanced-date-selector {
+    padding: 0.5rem 0.25rem;
+    gap: 0.4rem;
+  }
+
+  /* Date buttons - reduce size and padding */
+  .enhanced-date-button {
+    min-width: 70px;
+    width: 70px;
+    max-width: 70px;
+    min-height: 85px;
+    padding: 0.5rem 0.25rem;
+  }
+
+  /* Quick filters - minimal padding */
+  .enhanced-quick-filters {
+    padding: 0.5rem 0.25rem;
+    gap: 0.5rem;
+  }
+
+  .enhanced-filter-buttons {
+    padding: 0 0.25rem 0.25rem 0.25rem;
+    gap: 0.4rem;
+  }
+
+  .enhanced-filter-btn {
+    padding: 0.5rem 0.6rem;
+    font-size: 10px;
+    min-width: 65px;
+  }
+
+  /* Bus list - remove gaps */
+  .bus-list {
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Stats - minimal padding */
+  .bus-stats {
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .stats-item {
+    padding: 1.5rem 1rem;
+    border-radius: 0;
+  }
+
+  /* Guest CTA - minimal padding */
+  .guest-cta {
+    padding: 1.5rem 0.75rem;
+    margin: 1rem 0;
+    border-radius: 0;
+  }
+
+  /* Footer - minimal padding */
+  .footer,
+  footer {
+    padding: 2rem 0 1rem 0;
+    margin-top: 2rem;
+  }
+
+  .footer-container {
+    padding: 0 0.5rem;
+  }
+
+  .footer-content {
+    gap: 1rem;
+  }
+
+  /* No buses/search results - minimal padding */
+  .no-buses-container {
+    padding: 2rem 0.5rem;
+  }
+
+  .no-search-results,
+  .no-buses {
+    padding: 2rem 1rem;
+    border-radius: 0;
+  }
+
+  /* Guest actions - minimal padding */
+  .guest-actions {
+    padding: 1rem 0.5rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+  }
+
+  .guest-notice {
+    padding: 0.75rem 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+
+  .guest-encouragement {
+    padding: 0.75rem 0.5rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+  }
+
+  /* Sort options - compact */
+  .sort-options {
+    padding-top: 0.5rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sort-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 11px;
+  }
+
+  /* Loading container - minimal padding */
+  .loading-container {
+    padding: 2rem 0.5rem;
+  }
+
+  /* CTA buttons - full width, minimal padding */
+  .cta-buttons {
+    gap: 0.75rem;
+  }
+
+  .cta-button {
+    padding: 0.75rem 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Form elements in search - minimal spacing */
+  .search-form-container .ant-form,
+  .bus-search-wrapper .ant-form,
+  .search-form-container form,
+  .bus-search-wrapper form {
+    gap: 0.75rem;
+  }
+
+  .search-form-container .search-button,
+  .bus-search-wrapper .search-button,
+  .search-form-container button[type="submit"],
+  .bus-search-wrapper button[type="submit"] {
+    height: 48px;
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  /* Bus visual - reduce size or hide */
+  .bus-container {
+    width: 160px;
+    height: 100px;
+    transform: translateY(0);
+  }
+
+  .hero-visual {
+    padding-top: 0;
+  }
+
+  /* Remove extra margins and borders */
+  .bus-search-card::before,
+  .search-form-container::before,
+  .bus-search-wrapper::before {
+    display: none;
+  }
+
+  /* Compact hero title and subtitle */
+  .hero-title {
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    margin-bottom: 1.5rem;
+    padding-left: 0;
+  }
+}
+
+/* Extra small screens - 500px and below */
+@media (max-width: 500px) {
+  .header-container,
+  .nav-container {
+    padding: 0.5rem;
+  }
+
+  .hero-container {
+    padding: 0.75rem 0.25rem;
+  }
+
+  .bus-search-card,
+  .search-form-container,
+  .bus-search-wrapper,
+  .hero-content > div:last-child {
+    padding: 0.75rem 0.25rem;
+  }
+
+  .search-results-header {
+    padding: 0.75rem 0.25rem;
+  }
+
+  .date-selector-container,
+  .enhanced-date-filter-container {
+    padding: 0.5rem 0.1rem;
+  }
+
+  .enhanced-date-selector {
+    padding: 0.25rem 0.1rem;
+    gap: 0.3rem;
+  }
+
+  .enhanced-date-button {
+    min-width: 60px;
+    width: 60px;
+    max-width: 60px;
+    min-height: 75px;
+    padding: 0.4rem 0.2rem;
+  }
+
+  .guest-cta {
+    padding: 1.25rem 0.5rem;
+  }
+
+  .stats-item {
+    padding: 1.25rem 0.75rem;
+  }
+}
+
+/* Very small screens - 400px and below */
+@media (max-width: 400px) {
+  .header-container,
+  .nav-container {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .hero-container {
+    padding: 0.5rem 0.1rem;
+  }
+
+  .bus-search-card,
+  .search-form-container,
+  .bus-search-wrapper,
+  .hero-content > div:last-child {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .enhanced-date-button {
+    min-width: 55px;
+    width: 55px;
+    max-width: 55px;
+    min-height: 70px;
+    padding: 0.3rem 0.15rem;
+  }
+
+  .footer-container {
+    padding: 0 0.25rem;
+  }
+}
+
 @media (max-width: 480px) {
   .header-nav,
   .nav-links,
@@ -2011,6 +2346,7 @@ footer {
     font-size: 1.5rem;
   }
 }
+
 @media (max-width: 800px) {
   .hero-visual {
     display: none;
