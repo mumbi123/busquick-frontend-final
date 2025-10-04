@@ -95,7 +95,7 @@ function BusSearch({ onSearchResults }) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`${base_url}/api/buses/get-all-buses`, {
+      const response = await fetch(`${base_url}/api/buses`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({ 
