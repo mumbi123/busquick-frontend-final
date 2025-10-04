@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../resources/BusSearch.css';
 
+const base_url = "https://busquick.onrender.com";
+
 function BusSearch({ onSearchResults }) {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -93,7 +95,7 @@ function BusSearch({ onSearchResults }) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:5000/api/buses/get-all-buses', {
+      const response = await fetch(`${base_url}/api/buses/get-all-buses`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({ 
