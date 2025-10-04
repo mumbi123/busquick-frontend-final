@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: process.env.VITE_BASE_PATH || "/busquick-frontend-final",  // Fixed: Added comma and corrected 'process.env'
+  base: process.env.VITE_BASE_PATH || '/',  // Fixed: Fallback to root for Render serving
   server: {
     proxy: {
       '/api': {
