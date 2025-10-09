@@ -8,6 +8,7 @@ import Bus from '../components/Bus';
 import BusSearch from '../components/BusSearch';
 import TopTraveled from '../components/topTraveled';
 import Reviews from '../components/reviews';
+import FAQs from '../components/faqs';
 import LoginModal from '../components/LoginModal';
 import RegisterModal from '../components/RegisterModal';
 import '../resources/home.css';
@@ -398,7 +399,9 @@ function Home() {
         )}
       </div>
       <br/><br />
-      <Reviews />
+      <FAQs />
+      <br /><br />
+      <Reviews /> 
       <br />
       <TopTraveled />
       <LoginModal visible={loginModalVisible} onCancel={() => setLoginModalVisible(false)} onSuccess={handleLoginSuccess} />
