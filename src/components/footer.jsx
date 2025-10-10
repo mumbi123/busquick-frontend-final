@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaEnvelope, FaPhone, FaFacebook } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import { Modal, Form, Input, message, Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import { showLoading, hideLoading } from '../redux/alertsSlice';
 import axios from 'axios';
 import '../resources/footer.css';
 
-const baseURL =  'https://busquick.onrender.com';
+const baseURL = 'https://busquick.onrender.com';
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -53,33 +54,28 @@ function Footer() {
             <div className="contact-item">
               <FaEnvelope className="contact-icon" />
               <a href="mailto:support@busquick.co.zm">support@busquick.co.zm</a>
-            </div> 
+            </div>
             <div className="contact-item">
               <FaPhone className="contact-icon" />
               <a href="tel:+260960964433">+260960964433</a>
-            </div>
-            <div className="contact-item">
-              <FaFacebook className="contact-icon" />
-              <a href="https://www.facebook.com/BusQuickZM" target="_blank" rel="noopener noreferrer">
-                Follow us on Facebook
-              </a>
             </div>
           </div>
 
           <div className="footer-section">
             <h3>Quick Links</h3>
+            <Link to="/about" className="footer-link">About Us</Link>
             <Link to="/terms" className="footer-link">Terms & Conditions</Link>
           </div>
-          
+
           <div className="footer-section">
             <h3>Become Partners</h3>
-            <button 
-              onClick={showVendorModal} 
+            <button
+              onClick={showVendorModal}
               className="footer-link"
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'inherit', 
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'inherit',
                 textDecoration: 'underline',
                 cursor: 'pointer',
                 padding: 0,
@@ -88,6 +84,57 @@ function Footer() {
             >
               Become a Partner
             </button>
+          </div>
+
+          <div className="footer-section">
+            <h3>Follow Us On</h3>
+            <div className="social-links">
+              <a
+                href="https://www.facebook.com/BusQuickZM"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="social-link"
+              >
+                <FaFacebook />
+              </a>
+              <a
+                href="https://www.instagram.com/busquick_tickets?igsh=eHNxengzODQ2cThy"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="social-link"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                aria-label="TikTok"
+                className="social-link social-link-disabled"
+                title="Coming soon"
+              >
+                <FaTiktok />
+              </a>
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                aria-label="LinkedIn"
+                className="social-link social-link-disabled"
+                title="Coming soon"
+              >
+                <FaLinkedin />
+              </a>
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                aria-label="X (Twitter)"
+                className="social-link social-link-disabled"
+                title="Coming soon"
+              >
+                <FaXTwitter />
+              </a>
+            </div>
           </div>
         </div>
 
@@ -105,9 +152,9 @@ function Footer() {
         width={600}
         destroyOnClose={true}
       >
-        <Form 
+        <Form
           form={form}
-          layout="vertical" 
+          layout="vertical"
           onFinish={onFinishVendorRegistration}
           style={{ marginTop: '20px' }}
         >
@@ -142,7 +189,7 @@ function Footer() {
             name="address"
             rules={[{ required: true, message: 'Please input your business address!' }]}
           >
-            <Input.TextArea 
+            <Input.TextArea
               placeholder="Enter your business address"
               rows={3}
             />
@@ -179,8 +226,8 @@ function Footer() {
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
-            <Button 
-              onClick={handleVendorModalCancel} 
+            <Button
+              onClick={handleVendorModalCancel}
               style={{ marginRight: 8 }}
             >
               Cancel
