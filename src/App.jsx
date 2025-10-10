@@ -14,6 +14,7 @@ import BookNow from './pages/BookNow';
 import Bookings from './pages/bookings';
 import Payment from './components/payment';
 import TermsAndConditions from './components/terms';
+import About from './components/about';
 
 function App() {
   const { loading } = useSelector((state) => state.alerts);
@@ -40,6 +41,9 @@ function App() {
 
             {/* Terms and Conditions */}
             <Route path="/terms" element={<PublicHomeRoute><TermsAndConditions /></PublicHomeRoute>} />
+
+            {/* About */}
+            <Route path="/about" element={<PublicHomeRoute>< About/></PublicHomeRoute>} />
             
             {/* Catch all route - redirect to home for any unmatched routes */}
             <Route path="*" element={<PublicHomeRoute><Home /></PublicHomeRoute>} />
