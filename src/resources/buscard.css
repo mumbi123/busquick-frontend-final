@@ -42,10 +42,29 @@
 
 @media (hover: hover) {
   .bus-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(22, 163, 74, 0.15), 0 8px 16px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    border-color: var(--primary-light);
   }
+  
+  .bus-card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Animated gradient overlay on hover */
+.bus-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.02), rgba(34, 197, 94, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: var(--border-radius);
 }
 
 /* Timeline Warning Banner */
@@ -61,10 +80,22 @@
   gap: 8px;
   box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
   border-bottom: 1px solid #f59e0b;
+  animation: warning-pulse 2s ease-in-out infinite;
+}
+
+@keyframes warning-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 
 .bus-card__timeline-warning span {
   font-size: 14px;
+  animation: warning-icon-bounce 1s ease-in-out infinite;
+}
+
+@keyframes warning-icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
 }
 
 /* Content wrapper */
@@ -119,14 +150,16 @@
   height: auto;
   object-fit: contain;
   border-radius: 4px;
-  transition: var(--transition);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-right: auto;
   align-self: flex-start;
+  filter: brightness(1) contrast(1);
 }
 
 @media (hover: hover) {
   .bus-card:hover .bus-card__company-logo {
-    transform: scale(1.02);
+    transform: scale(1.05);
+    filter: brightness(1.1) contrast(1.05);
   }
 }
 
@@ -172,6 +205,15 @@
   color: #000000;
   letter-spacing: -0.025em;
   line-height: 1;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+@media (hover: hover) {
+  .bus-card:hover .bus-card__time-value {
+    color: var(--primary);
+    transform: scale(1.05);
+  }
 }
 
 .bus-card__city-value {
@@ -221,14 +263,21 @@
   font-size: 20px;
   color: var(--primary);
   font-weight: bold;
-  transition: var(--transition);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 @media (hover: hover) {
   .bus-card:hover .bus-card__arrow-icon {
     color: var(--primary-dark);
-    transform: translateX(2px);
+    transform: translateX(8px) scale(1.2);
+    animation: bounce-arrow 0.6s ease-in-out;
   }
+}
+
+@keyframes bounce-arrow {
+  0%, 100% { transform: translateX(8px) scale(1.2); }
+  50% { transform: translateX(12px) scale(1.25); }
 }
 
 /* Right Section - Details and Booking */
@@ -257,12 +306,26 @@
   font-size: 13px;
   color: #374151;
   font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .bus-card:hover .bus-card__detail-item {
+    color: var(--primary-dark);
+  }
+  
+  .bus-card:hover .bus-card__detail-item i {
+    color: var(--primary);
+    transform: scale(1.2);
+  }
 }
 
 .bus-card__detail-item i {
   width: 16px;
   text-align: center;
   color: var(--text-muted);
+  transition: all 0.3s ease;
 }
 
 /* Status Badge */
@@ -278,14 +341,32 @@
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.025em;
+  transition: all 0.3s ease;
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .status-badge.yet-to-start {
   background-color: var(--primary);
+  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4);
 }
 
 .status-badge.running {
   background-color: var(--success);
+  animation: pulse-running 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-running {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+  }
+  50% { 
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
+  }
 }
 
 .status-badge.completed {
@@ -305,23 +386,49 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-width: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bus-card__book-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
 }
 
 .bus-card__book-button.available {
   background: var(--primary);
   color: white;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
 }
 
 @media (hover: hover) {
   .bus-card__book-button.available:hover {
     background: var(--primary-dark);
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
+  }
+  
+  .bus-card__book-button.available:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .bus-card__book-button.available:active {
+    transform: translateY(0) scale(0.98);
   }
 }
 
@@ -360,25 +467,46 @@
   font-size: 12px;
   color: #1f2937;
   font-weight: 600;
-  transition: var(--transition);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.bus-card__amenity-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(22, 163, 74, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
 @media (hover: hover) {
   .bus-card__amenity-item:hover {
-    background: #f1f5f9;
-    border-color: var(--primary-light);
+    background: #f0fdf4;
+    border-color: var(--primary);
     color: var(--primary-dark);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
+  }
+  
+  .bus-card__amenity-item:hover::before {
+    left: 100%;
   }
   
   .bus-card__amenity-item:hover i {
     color: var(--primary-dark);
+    transform: scale(1.2) rotate(5deg);
   }
 }
 
 .bus-card__amenity-item i {
   font-size: 14px;
   color: var(--primary);
-  transition: var(--transition);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Low Seats Warning */
@@ -702,40 +830,72 @@
     gap: 4px;
   }
 
-  /* Disable hover effects entirely on small screens */
-  .bus-card:hover {
-    box-shadow: var(--shadow-sm);
-    transform: none;
-    border-color: var(--border-color);
+  /* Enable hover effects on small screens with touch optimization */
+  .bus-card:active {
+    box-shadow: 0 20px 40px rgba(22, 163, 74, 0.15), 0 8px 16px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    border-color: var(--primary-light);
   }
 
-  .bus-card:hover .bus-card__arrow-icon {
-    transform: none;
+  .bus-card:active::before {
+    opacity: 1;
+  }
+
+  .bus-card:active .bus-card__arrow-icon {
+    color: var(--primary-dark);
+    transform: translateX(8px) scale(1.2);
+    animation: bounce-arrow 0.6s ease-in-out;
+  }
+
+  .bus-card:active .bus-card__company-logo {
+    transform: scale(1.05);
+    filter: brightness(1.1) contrast(1.05);
+  }
+
+  .bus-card:active .bus-card__time-value {
     color: var(--primary);
+    transform: scale(1.05);
   }
 
-  .bus-card:hover .bus-card__company-logo {
-    border-color: var(--border-color);
-    box-shadow: none;
+  .bus-card__book-button.available:active {
+    background: var(--primary-dark);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
   }
 
-  .bus-card__book-button.available:hover {
-    background: var(--primary);
-    transform: none;
+  .bus-card__book-button.available:active::before {
+    width: 300px;
+    height: 300px;
   }
 
-  .bus-card__amenity-item:hover {
-    background: #f8fafc;
-    border-color: var(--border-color);
-    color: var(--text-secondary);
+  .bus-card__amenity-item:active {
+    background: #f0fdf4;
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
   }
 
-  .bus-card__amenity-item:hover i {
+  .bus-card__amenity-item:active::before {
+    left: 100%;
+  }
+
+  .bus-card__amenity-item:active i {
+    color: var(--primary-dark);
+    transform: scale(1.2) rotate(5deg);
+  }
+
+  .bus-card:active .bus-card__detail-item {
+    color: var(--primary-dark);
+  }
+
+  .bus-card:active .bus-card__detail-item i {
     color: var(--primary);
+    transform: scale(1.2);
   }
 
-  .retry-button:hover {
-    background: var(--primary);
+  .retry-button:active {
+    background: var(--primary-dark);
   }
 }
 
