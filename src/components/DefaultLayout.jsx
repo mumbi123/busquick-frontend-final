@@ -173,7 +173,7 @@ function DefaultLayout({ children }) {
     <>
       <div className="layout-parent">
         <div className="header">
-          <div className="logo-section">
+          <div className="logo-section" onClick={() => navigate('/about')}>
             <h1 className="logo">BusQuick</h1>
             <h6 className="role">
               {user
@@ -342,3 +342,4 @@ function DefaultLayout({ children }) {
 }
 
 export default DefaultLayout;
+ 
