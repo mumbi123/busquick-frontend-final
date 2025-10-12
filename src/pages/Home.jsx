@@ -209,7 +209,7 @@ function Home() {
           <h6 className="hero-subtitle">
             - Smart Travel Starts With BusQuick!!
             {!user && <span className="guest-indicator"> - Browse as guest, login to book</span>}
-          </h6>
+          </h6> 
           <BusSearch onSearchResults={handleSearchResults} />
           <br /><br /><br />
           {!user && (
@@ -392,7 +392,8 @@ function Home() {
               <p>Join thousands of satisfied travelers who trust BusQuick for their bus bookings</p>
               <div className="cta-buttons">
                 <button className="cta-button primary" onClick={handleRegisterClick}><i className="ri-user-add-line"></i>Sign Up Now</button>
-                <button className="cta-button secondary" onClick={handleLoginClick}><i className="ri-login-circle-line"></i>Login</button>
+                <button className="cta-button primary" onClick={handleLoginClick}><i className="ri-login-circle-line"></i>Login</button>
+
               </div>
             </div>
           </div>
