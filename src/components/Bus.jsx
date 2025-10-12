@@ -2,7 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import LoginModal from './LoginModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faWifi, 
+  faSnowflake, 
+  faTv, 
+  faPlug, 
+  faRestroom, 
+  faSuitcaseRolling,
+  faCheck 
+} from '@fortawesome/free-solid-svg-icons';
+import LoginModal from '../components/LoginModal';
 import '../resources/buscard.css';
 
 const Bus = (props) => {
@@ -20,7 +30,7 @@ const Bus = (props) => {
   // Function to get bus logo based on company name
   const getBusLogo = (busName) => {
     if (!busName || typeof busName !== 'string') {
-      return null;
+      return null; 
     }
 
     const normalizedName = busName.toLowerCase().trim();
@@ -422,8 +432,15 @@ const Bus = (props) => {
   };
 
   const getAmenityIcon = (amenity) => {
-    const icons = { ac: '❄️', wifi: '📶', tv: '📺', charger: '⚡', bathroom: '🚹🚺', luggage: '🧳' };
-    return icons[amenity?.toLowerCase()] || '✅';
+    const icons = {
+      ac: faSnowflake,
+      wifi: faWifi,
+      tv: faTv,
+      charger: faPlug,
+      bathroom: faRestroom,
+      luggage: faSuitcaseRolling
+    };
+    return icons[amenity?.toLowerCase()] || faCheck;
   };
 
   const getAmenityLabel = (amenity) => {
@@ -726,7 +743,7 @@ const Bus = (props) => {
                           className="bus-card__amenity-item"
                           title={getAmenityLabel(amenity)}
                         >
-                          <span>{getAmenityIcon(amenity)}</span>
+                          <FontAwesomeIcon icon={getAmenityIcon(amenity)} />
                           <span>{getAmenityLabel(amenity)}</span>
                         </div>
                       ))
