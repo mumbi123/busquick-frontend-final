@@ -60,7 +60,7 @@ const About = () => {
 
           {/* CTA Button */}
           <button onClick={handleBookNow} className="cta-button">
-            READY TO BOOK
+            PROCEED TO BOOK
           </button>
         </div>
       </div>
