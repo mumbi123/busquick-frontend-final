@@ -3,7 +3,7 @@
   --primary-green: #10B981;
   --dark-green: #047857;
   --light-green: #34D399;
-  --accent-green: #A7F3D0;
+  --accent-green: #A7F3D0; 
   --text-dark: #1F2937;
   --text-light: #6B7280;
   --white: #FFFFFF;
@@ -1162,7 +1162,7 @@ footer {
 }
 
 .cta-button.primary {
-  background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+  background: linear-gradient(135deg, orange, orange);
   color: var(--white);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
@@ -2352,3 +2352,174 @@ footer {
     display: none;
   }
 } 
+ 
+/*new additions*/
+/* Hero Logo Styles - HIDDEN */
+.hero-logo-container {
+  display: none; /* Hide the logo */
+}
+
+.hero-logo {
+  display: none;
+}
+
+/* Hero Section Styles - WITH BACKGROUND IMAGE */
+.hero-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 4rem 3rem 2rem 3rem;
+  min-height: 80vh;
+  gap: 5rem;
+  
+  /* Background Image */
+  background-image: url('/images/homebackground.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll; /* Ensure consistent display on mobile */
+  
+  border-radius: 0;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional: Add overlay for better text readability */
+.hero-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.75); /* Light white overlay */
+  pointer-events: none;
+  /* Remove hover effects */
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 700px;
+  animation: slideInLeft 1s ease-out;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Consistent green color scheme */
+.hero-title {
+  color: #047857 !important; /* Dark green */
+  text-shadow: 
+    1px 1px 2px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.hero-subtitle {
+  color: #047857 !important; /* Dark green */
+  text-shadow: 
+    1px 1px 2px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.highlight {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  color: #047857 !important; /* Dark green for highlights */
+  text-shadow: 
+    1px 1px 2px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+/* HIDE ALL ANIMATION ELEMENTS */
+.hero-visual {
+  display: none !important; /* Hide the entire animation section */
+}
+
+.bus-container {
+  display: none;
+}
+
+.bus-icon {
+  display: none;
+}
+
+.road {
+  display: none;
+}
+
+.clouds {
+  display: none;
+}
+
+.cloud {
+  display: none;
+}
+
+.speed-lines {
+  display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .hero-container {
+    padding: 3rem 2rem;
+    gap: 4rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 3rem;
+    min-height: auto;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 1rem 0.5rem;
+    gap: 1.5rem;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-container {
+    padding: 1.5rem 1rem;
+    margin: 0 auto;
+    gap: 2rem;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Remove the media query that was hiding hero-visual at 800px */
+@media (max-width: 800px) {
+  .hero-visual {
+    display: none !important;
+  }
+}
