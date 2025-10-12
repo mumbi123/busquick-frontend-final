@@ -13,7 +13,7 @@ const Partners = () => {
   ];
 
   const paymentMethods = [
-    { id: 1, name: 'MTN Mobile Money', image: '/images/mtn.png' },
+    { id: 1, name: 'MTN MOMO', image: '/images/mtn.png' },
     { id: 2, name: 'Airtel Money', image: '/images/airtel.png' },
     { id: 3, name: 'Bank Transfer', image: '/images/bank.png' }
   ];
