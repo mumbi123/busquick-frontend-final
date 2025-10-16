@@ -1,4 +1,4 @@
-/* BookNow.css - Stable Professional Design System */
+/* BookNow.css - Updated with Custom Colors */
 
 :root {
   /* Brand Colors - Project Specific */
@@ -141,10 +141,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Main Container - Completely stable */
+/* Main Container - WHITE BACKGROUND */
 .book-now-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary-50) 0%, var(--white) 50%, var(--gray-50) 100%);
+  background: #ffffff !important;
   position: relative;
   overflow-x: hidden;
 }
@@ -185,6 +185,7 @@ body {
   margin-right: auto;
 }
 
+/* Welcome, {name} - GREEN */
 .user-info {
   display: inline-flex;
   align-items: center;
@@ -195,7 +196,7 @@ body {
   box-shadow: var(--shadow-md);
   border: 2px solid var(--primary-100);
   font-weight: var(--font-semibold);
-  color: var(--text-secondary);
+  color: #1bb253 !important;
 }
 
 /* Grid Layout */
@@ -206,10 +207,10 @@ body {
   align-items: start;
 }
 
-/* Card Components - No hover movements */
+/* Card Components - WHITE BACKGROUND */
 .passenger-info-box,
 .seat-select-wrapper {
-  background: var(--white);
+  background: #ffffff !important;
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-lg);
   border: 2px solid var(--gray-200);
@@ -276,10 +277,11 @@ body {
   gap: var(--space-6);
 }
 
+/* Personal Details, Payment Methods - BLACK */
 .section-header h3 {
   font-size: var(--text-2xl);
   font-weight: var(--font-bold);
-  color: var(--text-primary);
+  color: #000000 !important;
   margin-bottom: var(--space-3);
 }
 
@@ -296,13 +298,14 @@ body {
   gap: var(--space-3);
 }
 
+/* Full Name, Phone Number, Emergency Contact - BLACK */
 .input-label {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
-  color: var(--text-primary);
+  color: #000000 !important;
 }
 
 .required-indicator {
@@ -314,6 +317,7 @@ body {
   position: relative;
 }
 
+/* Input boxes - WHITE BACKGROUND */
 .form-input {
   width: 100%;
   padding: var(--space-4) var(--space-5);
@@ -322,8 +326,8 @@ body {
   border-radius: var(--radius-xl);
   font-size: var(--text-base);
   font-weight: var(--font-medium);
-  background: var(--white);
-  color: var(--text-primary);
+  background: #ffffff !important;
+  color: #000000 !important;
   transition: var(--transition-fast);
   outline: none;
   box-shadow: var(--shadow-sm);
@@ -339,7 +343,7 @@ body {
 }
 
 .form-input::placeholder {
-  color: var(--text-muted);
+  color: #999999 !important;
   font-weight: var(--font-normal);
 }
 
@@ -348,7 +352,7 @@ body {
   right: var(--space-4);
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted);
+  color: #666666;
   pointer-events: none;
 }
 
@@ -358,7 +362,8 @@ body {
 
 .error-input {
   border-color: var(--error);
-  background: var(--error-50);
+  background: var(--error-50) !important;
+  color: var(--text-primary) !important;
 }
 
 .error-input:focus {
@@ -412,15 +417,16 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-/* Seat Selection - Stable and professional */
+/* Seat Selection - WHITE BACKGROUND */
 .seat-select-wrapper {
   padding: var(--space-8);
 }
 
+/* Choose Your Seats - BLACK */
 .seat-select-title {
   font-size: var(--text-3xl);
   font-weight: var(--font-bold);
-  color: var(--text-primary);
+  color: #000000 !important;
   text-align: center;
   margin-bottom: var(--space-8);
   position: relative;
@@ -1288,47 +1294,6 @@ body {
   }
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-primary: #1f2937;
-    --bg-secondary: #374151;
-    --bg-tertiary: #4b5563;
-    --white: #f9fafb;
-    --text-primary: var(--white);
-    --text-secondary: #d1d5db;
-    --text-muted: #9ca3af;
-    --gray-200: #4b5563;
-    --gray-300: #6b7280;
-  }
-  
-  .book-now-container {
-    background: linear-gradient(135deg, rgba(27, 178, 83, 0.1) 0%, #1f2937 50%, #374151 100%);
-  }
-  
-  .form-input {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border-color: var(--gray-300);
-  }
-  
-  .seat-legend,
-  .seat-select-container {
-    background: var(--bg-secondary);
-    border-color: var(--gray-300);
-  }
-  
-  .passenger-seat {
-    background: var(--bg-secondary);
-    border-color: var(--gray-300);
-  }
-  
-  .passenger-seat:hover:not(.unavailable):not(.booked):not(.disabled-max-reached) {
-    background: rgba(27, 178, 83, 0.2);
-    border-color: var(--primary);
-  }
-}
-
 /* Print Styles */
 @media print {
   .book-now-container {
@@ -1365,4 +1330,4 @@ body {
   .selection-display::before {
     background: black !important;
   }
-} 
+}
