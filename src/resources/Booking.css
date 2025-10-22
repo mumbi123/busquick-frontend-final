@@ -426,59 +426,74 @@
 .journey-actions button[class*="download"],
 .journey-actions div > button,
 .journey-actions div {
-    margin: 0;
-    padding: 4px 8px;
-    font-size: 11px;
-    border-radius: 4px;
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+    max-width: 100px !important;
+    min-width: auto !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background: #10b981 !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    display: inline-block !important;
+    flex-shrink: 1 !important;
+}
+
+.journey-actions > div {
+    max-width: 100px !important;
+    overflow: hidden !important;
+    flex-shrink: 1 !important;
+    display: flex !important;
+}
+
+.journey-actions > div > * {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 .cancel-btn {
-    background: #dc2626;
-    color: white;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
 }
 
 .cancel-btn:hover {
-    background: #b91c1c;
+    background: #fee2e2;
+    border-color: #fca5a5;
 }
 
 .delete-btn {
-    background: #7c3aed;
-    color: white;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
 }
 
 .delete-btn:hover {
-    background: #6d28d9;
-}
-
-.booking-status-small.confirmed {
-    background: #22c55e;
-}
-
-.booking-status-small.cancelled {
-    background: #dc2626;
-}
-
-.booking-status-small.pending {
-    background: #f59e0b;
+    background: #fee2e2;
+    border-color: #fca5a5;
 }
 
 .departure-badge {
-    background: #0066cc;
+    background: #1f2937;
     color: white;
-    padding: 16px;
+    padding: 12px 16px;
     border-radius: 0 16px 16px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 140px;
+    min-width: 120px;
     flex-shrink: 0;
     text-align: center;
 }
 
 .departure-label {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 10px;
     color: #d1d5db;
     text-transform: lowercase;
     margin-bottom: 4px;
@@ -828,40 +843,12 @@
     }
 }
 
-/* NEW: Styles for screens less than 600px */
-@media (max-width: 600px) {
+@media (max-width: 480px) {
     .booking-container {
         margin: 4px;
         padding: 4px;
     }
 
-    .booking-header {
-        margin-bottom: 12px;
-        padding-bottom: 12px;
-    }
-
-    .booking-tabs {
-        margin-bottom: 12px;
-    }
-
-    .bookings-list {
-        gap: 12px;
-    }
-
-    .no-bookings {
-        padding: 32px 12px;
-    }
-
-    .loading, .error {
-        padding: 32px 12px;
-    }
-
-    .error-container {
-        padding: 32px 12px;
-    }
-}
-
-@media (max-width: 480px) {
     .tab-button {
         padding: 12px 14px;
         font-size: 12px;
