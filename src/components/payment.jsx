@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../resources/payment.css';
 
-const API_BASE_URL = import .meta.env.NODE_ENV ===  'https://busquick.onrender.com';
+const API_BASE_URL = https://busquick.onrender.com;
 
 // Notification Component
 const Notification = ({ message, type, onTryAgain, onCancel, show }) => {
