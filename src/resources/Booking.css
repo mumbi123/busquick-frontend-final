@@ -426,62 +426,59 @@
 .journey-actions button[class*="download"],
 .journey-actions div > button,
 .journey-actions div {
-    padding: 4px 8px !important;
-    border-radius: 4px !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    white-space: nowrap !important;
-    max-width: 100px !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    margin: 0 !important;
+    margin: 0;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 4px;
 }
 
-.journey-actions .download-pdf-button,
-.journey-actions .download-pdf-button-compact {
-    background: #10b981 !important;
-    color: white !important;
-    border: none !important;
-}
-
-.journey-actions .download-pdf-button:hover,
-.journey-actions .download-pdf-button-compact:hover {
-    background: #059669 !important;
-}
-
-.action-btn.cancel {
-    background: #ef4444;
+.cancel-btn {
+    background: #dc2626;
     color: white;
 }
 
-.action-btn.cancel:hover {
+.cancel-btn:hover {
+    background: #b91c1c;
+}
+
+.delete-btn {
+    background: #7c3aed;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #6d28d9;
+}
+
+.booking-status-small.confirmed {
+    background: #22c55e;
+}
+
+.booking-status-small.cancelled {
     background: #dc2626;
 }
 
-.action-btn.delete {
-    background: #6b7280;
-    color: white;
-}
-
-.action-btn.delete:hover {
-    background: #4b5563;
+.booking-status-small.pending {
+    background: #f59e0b;
 }
 
 .departure-badge {
-    background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
-    padding: 12px 16px;
+    background: #0066cc;
+    color: white;
+    padding: 16px;
+    border-radius: 0 16px 16px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-width: 140px;
-    border-radius: 0 16px 16px 0;
     flex-shrink: 0;
+    text-align: center;
 }
 
 .departure-label {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: #d1d5db;
     text-transform: lowercase;
     margin-bottom: 4px;
@@ -831,337 +828,115 @@
     }
 }
 
-/* OPTIMIZED FOR SCREENS LESS THAN 600PX */
+/* NEW: Styles for screens less than 600px */
 @media (max-width: 600px) {
-    /* Minimal container spacing */
     .booking-container {
-        margin: 8px;
-        padding: 12px;
-        border-radius: 12px;
-    }
-
-    /* Compact header */
-    .booking-header {
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        gap: 8px;
-    }
-
-    .booking-header h2 {
-        font-size: 20px;
-    }
-
-    .refresh-button {
-        padding: 10px 16px;
-        font-size: 13px;
-        gap: 6px;
-    }
-
-    /* Compact tabs */
-    .booking-tabs {
+        margin: 4px;
         padding: 4px;
-        gap: 4px;
-        margin-bottom: 16px;
     }
 
-    .tab-button {
-        padding: 10px 8px;
-        font-size: 12px;
-        gap: 2px;
+    .booking-header {
+        margin-bottom: 12px;
+        padding-bottom: 12px;
     }
 
-    .tab-icon {
-        font-size: 16px;
-    }
-
-    .tab-count {
-        padding: 1px 6px;
-        font-size: 11px;
-    }
-
-    /* Minimal loading/error spacing */
-    .loading, .error {
-        padding: 24px 12px;
-        margin-top: 12px;
-    }
-
-    .error-container {
-        padding: 24px 12px;
-        margin-top: 12px;
-    }
-
-    /* Compact empty state */
-    .no-bookings {
-        padding: 32px 16px;
-        margin-top: 12px;
-    }
-
-    .no-bookings-icon {
-        font-size: 36px;
+    .booking-tabs {
         margin-bottom: 12px;
     }
 
-    .no-bookings h3 {
-        font-size: 18px;
-        margin-bottom: 6px;
-    }
-
-    .no-bookings p {
-        font-size: 14px;
-    }
-
-    /* Compact booking cards */
     .bookings-list {
         gap: 12px;
     }
 
-    .booking-card-journey {
-        margin-bottom: 12px;
-        border-radius: 12px;
+    .no-bookings {
+        padding: 32px 12px;
     }
 
-    .journey-number {
-        height: 48px;
-        font-size: 18px;
-        border-radius: 12px 12px 0 0;
+    .loading, .error {
+        padding: 32px 12px;
     }
 
-    .journey-content {
-        padding: 10px;
-        gap: 6px;
-    }
-
-    .journey-header-row {
-        margin-bottom: 2px;
-        gap: 6px;
-    }
-
-    .bus-name {
-        font-size: 14px;
-        margin: 0 0 2px 0;
-    }
-
-    .route-compact {
-        gap: 4px;
-        font-size: 12px;
-    }
-
-    .route-label, .route-value {
-        font-size: 12px;
-    }
-
-    .booking-meta-section {
-        gap: 6px;
-    }
-
-    .booking-id {
-        font-size: 10px;
-    }
-
-    .booking-status-small {
-        font-size: 9px;
-        padding: 2px 6px;
-    }
-
-    .user-info-journey {
-        font-size: 10px;
-        padding: 3px 6px;
-        margin-bottom: 2px;
-    }
-
-    /* Compact detail grid */
-    .journey-details-grid {
-        grid-template-columns: 1fr;
-        gap: 4px;
-        margin-top: 8px;
-    }
-
-    .detail-group {
-        padding: 6px 8px;
-        font-size: 11px;
-        gap: 1px;
-        background: #f8fafc;
-        border-radius: 4px;
-    }
-
-    .detail-label {
-        font-size: 10px;
-    }
-
-    .detail-value {
-        font-size: 11px;
-    }
-
-    .detail-value.price {
-        font-size: 12px;
-    }
-
-    /* Compact departure badge */
-    .departure-badge {
-        padding: 10px;
-        border-radius: 0 0 12px 12px;
-        min-width: 100%;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-    .departure-label {
-        font-size: 10px;
-        margin-bottom: 2px;
-        margin-right: 0;
-    }
-
-    .departure-time {
-        font-size: 16px;
-        margin-bottom: 0;
-    }
-
-    .departure-date {
-        font-size: 11px;
-    }
-
-    /* Compact actions */
-    .journey-actions {
-        gap: 4px;
-        margin-top: 8px;
-        padding-top: 8px;
-        justify-content: center;
-    }
-
-    .action-btn {
-        font-size: 10px;
-        padding: 6px 8px;
-        max-width: 90px;
-    }
-
-    .journey-actions .download-button,
-    .journey-actions button[class*="download"],
-    .journey-actions div > button {
-        font-size: 10px !important;
-        padding: 6px 8px !important;
-        max-width: 90px !important;
-    }
-
-    .download-pdf-button-compact {
-        font-size: 10px;
-        padding: 6px 8px;
+    .error-container {
+        padding: 32px 12px;
     }
 }
 
-/* EXTRA MINIMAL FOR VERY SMALL SCREENS */
 @media (max-width: 480px) {
-    /* Even more compact for tiny screens */
-    .booking-container {
-        margin: 4px;
-        padding: 8px;
-        border-radius: 8px;
-    }
-
-    .booking-header {
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-    }
-
-    .booking-header h2 {
-        font-size: 18px;
-    }
-
-    .refresh-button {
-        padding: 8px 12px;
+    .tab-button {
+        padding: 12px 14px;
         font-size: 12px;
     }
 
-    .booking-tabs {
-        padding: 3px;
-        gap: 3px;
-        margin-bottom: 12px;
-    }
-
-    .tab-button {
-        padding: 8px 6px;
-        font-size: 11px;
-    }
-
     .tab-icon {
-        font-size: 14px;
-    }
-
-    .journey-number {
-        height: 40px;
         font-size: 16px;
     }
 
+    .booking-card-journey {
+        margin-bottom: 16px;
+    }
+
+    .journey-number {
+        height: 50px;
+        font-size: 20px;
+    }
+
     .journey-content {
-        padding: 8px;
-        gap: 4px;
+        padding: 14px;
     }
 
     .bus-name {
-        font-size: 13px;
-    }
-
-    .route-compact {
-        font-size: 11px;
-    }
-
-    .route-label, .route-value {
-        font-size: 11px;
+        font-size: 15px;
     }
 
     .booking-id {
-        font-size: 9px;
+        font-size: 11px;
     }
 
     .booking-status-small {
-        font-size: 8px;
-        padding: 2px 4px;
+        font-size: 9px;
+        padding: 3px 6px;
     }
 
-    .user-info-journey {
-        font-size: 9px;
-        padding: 2px 4px;
+    .route-label, .route-value {
+        font-size: 13px;
+    }
+
+    .journey-details-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
     }
 
     .detail-group {
-        padding: 4px 6px;
-        font-size: 10px;
-    }
-
-    .detail-label {
-        font-size: 9px;
-    }
-
-    .detail-value {
-        font-size: 10px;
+        padding: 6px;
+        font-size: 11px;
     }
 
     .departure-badge {
-        padding: 8px;
+        padding: 12px;
+        flex-direction: column;
+        gap: 4px;
     }
 
     .departure-label {
-        font-size: 9px;
+        margin-right: 0;
+        font-size: 11px;
     }
 
     .departure-time {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .departure-date {
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .action-btn {
-        font-size: 9px;
-        padding: 5px 6px;
-        max-width: 80px;
+        font-size: 11px;
+        padding: 5px 10px;
     }
 
-    .journey-actions .download-button,
-    .journey-actions button[class*="download"],
-    .journey-actions div > button {
-        font-size: 9px !important;
-        padding: 5px 6px !important;
-        max-width: 80px !important;
+    .user-info-journey {
+        font-size: 11px;
+        padding: 4px 8px;
     }
 }
