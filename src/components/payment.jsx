@@ -1,12 +1,11 @@
-// src/components/Payment.jsx
-import React, { useState, useEffect, useRef } from 'react'; // Added useRef
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../resources/payment.css';
 
 const API_BASE_URL = 'https://busquick.onrender.com';
 
-// Notification Component (unchanged)
+// Notification Component
 const Notification = ({ message, type, onTryAgain, onCancel, show }) => {
   if (!show) return null;
   
@@ -61,10 +60,6 @@ const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Use refs to track polling state
-  const pollingIntervalRef = useRef(null);
-  const isCancelledRef = useRef(false);
-  
   let initialState = location.state || {};
   if (!initialState.bus && localStorage.getItem('pendingBooking')) {
     try {
@@ -89,6 +84,7 @@ const Payment = () => {
   const [reference, setReference] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pollingInterval, setPollingInterval] = useState(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   
   // Notification state
@@ -106,31 +102,24 @@ const Payment = () => {
     
     const cleaned = phoneValue.replace(/[^\d+]/g, '');
     
-    // If number starts with 0 and has 10 digits, convert to +260
     if (cleaned.startsWith('0') && cleaned.length === 10) {
       return '+260' + cleaned.substring(1);
     }
     
-    // If number starts with 260 (without +), add the +
     if (cleaned.startsWith('260') && cleaned.length === 12) {
       return '+' + cleaned;
     }
     
-    // If number already has proper format or other international format, return as is
     return cleaned.startsWith('+') ? cleaned : cleaned;
   };
 
   // Format phone number input (allow international format)
   const formatPhoneNumber = (value) => {
-    // Remove all non-digit and non-plus characters
     const cleaned = value.replace(/[^\d+]/g, '');
     
-    // Ensure it starts with + if user adds it
     if (cleaned.startsWith('+')) {
-      // Limit to 13 characters total (+XXXXXXXXXXXX)
       return cleaned.substring(0, 13);
     } else {
-      // If no +, limit to 12 digits
       return cleaned.substring(0, 12);
     }
   };
@@ -172,14 +161,6 @@ const Payment = () => {
     return channelMap[channel] || 'mobile';
   };
 
-  // Cleanup function
-  const cleanupPaymentProcess = () => {
-    stopPolling();
-    isCancelledRef.current = true;
-    setLoading(false);
-    setPaymentStatus(null);
-  };
-
   useEffect(() => {
     loadLencoScript()
       .then(() => setScriptLoaded(true))
@@ -189,12 +170,11 @@ const Payment = () => {
       });
 
     return () => {
-      cleanupPaymentProcess();
+      if (pollingInterval) clearInterval(pollingInterval);
     };
   }, []);
 
   const validateInputs = () => {
-    // Format the phone number before validation
     const formattedPhone = formatPhoneForPayment(phone);
     const phoneRegex = /^\+260\d{9}$/;
     
@@ -232,8 +212,6 @@ const Payment = () => {
       return;
     }
 
-    // Reset cancellation flag when starting new payment
-    isCancelledRef.current = false;
     setLoading(true);
     hideNotification();
     setPaymentStatus('processing');
@@ -244,7 +222,6 @@ const Payment = () => {
     const [firstName, ...lastNameParts] = name.trim().split(' ');
     const lastName = lastNameParts.join(' ') || 'N/A';
 
-    // Ensure phone number is properly formatted for payment
     const formattedPhone = formatPhoneForPayment(phone);
 
     const paymentData = {
@@ -257,7 +234,7 @@ const Payment = () => {
       customer: {
         firstName: firstName || 'Customer',
         lastName: lastName,
-        phone: formattedPhone, // Use the formatted phone number
+        phone: formattedPhone,
       },
     };
 
@@ -265,18 +242,16 @@ const Payment = () => {
       window.LencoPay.getPaid({
         ...paymentData,
         onSuccess: async (response) => {
-          if (isCancelledRef.current) return; // Don't proceed if cancelled
           setLoading(false);
           await handlePaymentSuccess(response);
         },
-        onClose: () => {
-          if (isCancelledRef.current) return; // Don't proceed if cancelled
+        onClose: async () => {
           setLoading(false);
-          setPaymentStatus(null);
-          showNotification('Payment was not completed', 'error', true);
+          setPaymentStatus('cancelled');
+          await cancelPayment(ref);
+          showNotification('Payment cancelled. No further notifications will be sent.', 'error', true);
         },
         onConfirmationPending: () => {
-          if (isCancelledRef.current) return; // Don't proceed if cancelled
           setLoading(false);
           setPaymentStatus('pay-offline');
           showNotification('Please authorize the payment on your mobile phone.', 'info');
@@ -292,8 +267,6 @@ const Payment = () => {
   };
 
   const handlePaymentSuccess = async (response) => {
-    if (isCancelledRef.current) return; // Don't proceed if cancelled
-    
     try {
       const verifyResponse = await fetch(`${API_BASE_URL}/api/payment/verify/${response.reference}`);
       const data = await verifyResponse.json();
@@ -322,8 +295,6 @@ const Payment = () => {
   };
 
   const createBooking = async (transactionId, channel = null) => {
-    if (isCancelledRef.current) return; // Don't proceed if cancelled
-    
     if (!bus || !seats?.length || !totalPrice || !passengerDetails) {
       showNotification('Booking data incomplete. Contact support with ref: ' + transactionId, 'error', true);
       return;
@@ -339,7 +310,6 @@ const Payment = () => {
 
       const mappedPaymentMethod = channel ? mapPaymentMethod(channel) : 'mobile';
       
-      // Ensure the phone number in passenger details is properly formatted
       const updatedPassengerDetails = {
         ...passengerDetails,
         phone: formatPhoneForPayment(passengerDetails.phone || phone)
@@ -377,8 +347,6 @@ const Payment = () => {
   };
 
   const submitOtp = async () => {
-    if (isCancelledRef.current) return; // Don't proceed if cancelled
-    
     if (!/^\d{4,6}$/.test(otp)) {
       showNotification('OTP must be 4-6 digits', 'error');
       return;
@@ -422,12 +390,24 @@ const Payment = () => {
     }
   };
 
-  const verifyPayment = async (ref) => {
-    if (isCancelledRef.current) {
+  const cancelPayment = async (ref) => {
+    try {
       stopPolling();
-      return;
+      setPaymentStatus('cancelled');
+      setReference(null);
+      localStorage.removeItem('pendingBooking');
+      await axios.post(`${API_BASE_URL}/api/payment/cancel`, { reference: ref }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (err) {
+      console.error('Error cancelling payment:', err);
+      showNotification('Failed to cancel payment. Please contact support.', 'error', true);
     }
-    
+  };
+
+  const verifyPayment = async (ref) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/payment/verify/${ref}`);
       const data = await response.json();
@@ -441,9 +421,9 @@ const Payment = () => {
       if (status === 'successful') {
         await createBooking(ref);
         stopPolling();
-      } else if (status === 'failed') {
-        setPaymentStatus(null);
-        showNotification('Payment failed. Please try again.', 'error', true);
+      } else if (status === 'failed' || status === 'cancelled') {
+        setPaymentStatus('cancelled');
+        showNotification('Payment cancelled or failed. No further notifications will be sent.', 'error', true);
         stopPolling();
       } else if (status === 'otp-required') {
         setPaymentStatus('otp-required');
@@ -456,27 +436,23 @@ const Payment = () => {
   };
 
   const startPolling = (ref) => {
-    if (pollingIntervalRef.current) return;
-    
+    if (pollingInterval) return;
     const interval = setInterval(() => verifyPayment(ref), 5000);
-    pollingIntervalRef.current = interval;
+    setPollingInterval(interval);
     
-    // Auto-stop polling after 5 minutes
     setTimeout(() => {
-      if (pollingIntervalRef.current) {
-        stopPolling();
-        if (paymentStatus === 'pending' || paymentStatus === 'pay-offline') {
-          showNotification('Payment verification timeout. Please check with support.', 'error', true);
-          setPaymentStatus(null);
-        }
+      stopPolling();
+      if (paymentStatus === 'pending' || paymentStatus === 'pay-offline') {
+        showNotification('Payment verification timeout. Please check with support.', 'error', true);
+        setPaymentStatus(null);
       }
     }, 300000);
   };
 
   const stopPolling = () => {
-    if (pollingIntervalRef.current) {
-      clearInterval(pollingIntervalRef.current);
-      pollingIntervalRef.current = null;
+    if (pollingInterval) {
+      clearInterval(pollingInterval);
+      setPollingInterval(null);
     }
   };
 
@@ -491,10 +467,15 @@ const Payment = () => {
     setLoading(false);
   };
 
-  const handleCancel = () => {
-    // Stop all payment processes and cleanup
-    cleanupPaymentProcess();
+  const handleCancel = async () => {
     hideNotification();
+    if (reference) {
+      await cancelPayment(reference);
+    } else {
+      setPaymentStatus('cancelled');
+      localStorage.removeItem('pendingBooking');
+      showNotification('Payment cancelled. No further notifications will be sent.', 'error', true);
+    }
     navigate('/');
   };
 
@@ -525,7 +506,7 @@ const Payment = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                disabled={loading || paymentStatus === 'success'}
+                disabled={loading || paymentStatus === 'success' || paymentStatus === 'cancelled'}
                 placeholder="Enter your full name"
                 required
               />
@@ -537,7 +518,7 @@ const Payment = () => {
                 type="tel"
                 value={phone}
                 onChange={handlePhoneChange}
-                disabled={loading || paymentStatus === 'success'}
+                disabled={loading || paymentStatus === 'success' || paymentStatus === 'cancelled'}
                 placeholder="Enter phone number (e.g., 0977123456 or +260977123456)"
                 required
               />
@@ -579,7 +560,8 @@ const Payment = () => {
                 !scriptLoaded || 
                 paymentStatus === 'success' || 
                 paymentStatus === 'otp-required' || 
-                paymentStatus === 'processing'
+                paymentStatus === 'processing' ||
+                paymentStatus === 'cancelled'
               }
             >
               {loading ? (
@@ -610,6 +592,15 @@ const Payment = () => {
               <div className="pending-icon">📱</div>
               <h3>Authorization Required</h3>
               <p>Please check your phone and authorize the payment</p>
+            </div>
+          )}
+
+          {paymentStatus === 'cancelled' && (
+            <div className="cancelled-status">
+              <div className="cancelled-icon">❌</div>
+              <h3>Payment Cancelled</h3>
+              <p>No further payment requests will be sent.</p>
+              <p>Redirecting to homepage...</p>
             </div>
           )}
         </div>
