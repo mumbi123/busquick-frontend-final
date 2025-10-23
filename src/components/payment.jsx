@@ -1,12 +1,12 @@
 // src/components/Payment.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Added useRef
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../resources/payment.css';
 
-const API_BASE_URL =  'https://busquick.onrender.com';
+const API_BASE_URL = 'https://busquick.onrender.com';
 
-// Notification Component
+// Notification Component (unchanged)
 const Notification = ({ message, type, onTryAgain, onCancel, show }) => {
   if (!show) return null;
   
@@ -61,6 +61,10 @@ const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Use refs to track polling state
+  const pollingIntervalRef = useRef(null);
+  const isCancelledRef = useRef(false);
+  
   let initialState = location.state || {};
   if (!initialState.bus && localStorage.getItem('pendingBooking')) {
     try {
@@ -85,7 +89,6 @@ const Payment = () => {
   const [reference, setReference] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [pollingInterval, setPollingInterval] = useState(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   
   // Notification state
@@ -169,6 +172,14 @@ const Payment = () => {
     return channelMap[channel] || 'mobile';
   };
 
+  // Cleanup function
+  const cleanupPaymentProcess = () => {
+    stopPolling();
+    isCancelledRef.current = true;
+    setLoading(false);
+    setPaymentStatus(null);
+  };
+
   useEffect(() => {
     loadLencoScript()
       .then(() => setScriptLoaded(true))
@@ -178,7 +189,7 @@ const Payment = () => {
       });
 
     return () => {
-      if (pollingInterval) clearInterval(pollingInterval);
+      cleanupPaymentProcess();
     };
   }, []);
 
@@ -221,6 +232,8 @@ const Payment = () => {
       return;
     }
 
+    // Reset cancellation flag when starting new payment
+    isCancelledRef.current = false;
     setLoading(true);
     hideNotification();
     setPaymentStatus('processing');
@@ -252,15 +265,18 @@ const Payment = () => {
       window.LencoPay.getPaid({
         ...paymentData,
         onSuccess: async (response) => {
+          if (isCancelledRef.current) return; // Don't proceed if cancelled
           setLoading(false);
           await handlePaymentSuccess(response);
         },
         onClose: () => {
+          if (isCancelledRef.current) return; // Don't proceed if cancelled
           setLoading(false);
           setPaymentStatus(null);
           showNotification('Payment was not completed', 'error', true);
         },
         onConfirmationPending: () => {
+          if (isCancelledRef.current) return; // Don't proceed if cancelled
           setLoading(false);
           setPaymentStatus('pay-offline');
           showNotification('Please authorize the payment on your mobile phone.', 'info');
@@ -276,6 +292,8 @@ const Payment = () => {
   };
 
   const handlePaymentSuccess = async (response) => {
+    if (isCancelledRef.current) return; // Don't proceed if cancelled
+    
     try {
       const verifyResponse = await fetch(`${API_BASE_URL}/api/payment/verify/${response.reference}`);
       const data = await verifyResponse.json();
@@ -304,6 +322,8 @@ const Payment = () => {
   };
 
   const createBooking = async (transactionId, channel = null) => {
+    if (isCancelledRef.current) return; // Don't proceed if cancelled
+    
     if (!bus || !seats?.length || !totalPrice || !passengerDetails) {
       showNotification('Booking data incomplete. Contact support with ref: ' + transactionId, 'error', true);
       return;
@@ -357,6 +377,8 @@ const Payment = () => {
   };
 
   const submitOtp = async () => {
+    if (isCancelledRef.current) return; // Don't proceed if cancelled
+    
     if (!/^\d{4,6}$/.test(otp)) {
       showNotification('OTP must be 4-6 digits', 'error');
       return;
@@ -401,6 +423,11 @@ const Payment = () => {
   };
 
   const verifyPayment = async (ref) => {
+    if (isCancelledRef.current) {
+      stopPolling();
+      return;
+    }
+    
     try {
       const response = await fetch(`${API_BASE_URL}/api/payment/verify/${ref}`);
       const data = await response.json();
@@ -429,23 +456,27 @@ const Payment = () => {
   };
 
   const startPolling = (ref) => {
-    if (pollingInterval) return;
-    const interval = setInterval(() => verifyPayment(ref), 5000);
-    setPollingInterval(interval);
+    if (pollingIntervalRef.current) return;
     
+    const interval = setInterval(() => verifyPayment(ref), 5000);
+    pollingIntervalRef.current = interval;
+    
+    // Auto-stop polling after 5 minutes
     setTimeout(() => {
-      stopPolling();
-      if (paymentStatus === 'pending' || paymentStatus === 'pay-offline') {
-        showNotification('Payment verification timeout. Please check with support.', 'error', true);
-        setPaymentStatus(null);
+      if (pollingIntervalRef.current) {
+        stopPolling();
+        if (paymentStatus === 'pending' || paymentStatus === 'pay-offline') {
+          showNotification('Payment verification timeout. Please check with support.', 'error', true);
+          setPaymentStatus(null);
+        }
       }
     }, 300000);
   };
 
   const stopPolling = () => {
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-      setPollingInterval(null);
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
     }
   };
 
@@ -461,6 +492,8 @@ const Payment = () => {
   };
 
   const handleCancel = () => {
+    // Stop all payment processes and cleanup
+    cleanupPaymentProcess();
     hideNotification();
     navigate('/');
   };
