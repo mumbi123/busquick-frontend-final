@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../resources/payment.css';
@@ -84,8 +84,12 @@ const Payment = () => {
   const [reference, setReference] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [pollingInterval, setPollingInterval] = useState(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  
+  // Use refs for values that shouldn't trigger re-renders
+  const pollingIntervalRef = useRef(null);
+  const isCancelledRef = useRef(false);
+  const paymentAbortControllerRef = useRef(null);
   
   // Notification state
   const [notification, setNotification] = useState({
@@ -94,12 +98,11 @@ const Payment = () => {
     type: 'info'
   });
 
-  const email = 'support@busquick.co.zm'; // Fixed email
+  const email = 'support@busquick.co.zm';
 
-  // Format phone number for saving (converts 0XXXXXXXXX to +260XXXXXXXXX)
+  // Format phone number for saving
   const formatPhoneForPayment = (phoneValue) => {
     if (!phoneValue) return '';
-    
     const cleaned = phoneValue.replace(/[^\d+]/g, '');
     
     if (cleaned.startsWith('0') && cleaned.length === 10) {
@@ -113,10 +116,9 @@ const Payment = () => {
     return cleaned.startsWith('+') ? cleaned : cleaned;
   };
 
-  // Format phone number input (allow international format)
+  // Format phone number input
   const formatPhoneNumber = (value) => {
     const cleaned = value.replace(/[^\d+]/g, '');
-    
     if (cleaned.startsWith('+')) {
       return cleaned.substring(0, 13);
     } else {
@@ -124,13 +126,11 @@ const Payment = () => {
     }
   };
 
-  // Handle phone input change with auto-formatting
   const handlePhoneChange = (e) => {
     const formatted = formatPhoneNumber(e.target.value);
     setPhone(formatted);
   };
 
-  // Get display hint for phone formatting
   const getPhoneHint = (phoneValue) => {
     const cleaned = phoneValue.replace(/[^\d+]/g, '');
     if (cleaned.startsWith('0') && cleaned.length === 10) {
@@ -161,6 +161,24 @@ const Payment = () => {
     return channelMap[channel] || 'mobile';
   };
 
+  // Cleanup function
+  const cleanupPaymentProcess = () => {
+    // Stop polling
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
+    
+    // Abort any ongoing API requests
+    if (paymentAbortControllerRef.current) {
+      paymentAbortControllerRef.current.abort();
+      paymentAbortControllerRef.current = null;
+    }
+    
+    // Reset cancellation flag
+    isCancelledRef.current = false;
+  };
+
   useEffect(() => {
     loadLencoScript()
       .then(() => setScriptLoaded(true))
@@ -170,7 +188,7 @@ const Payment = () => {
       });
 
     return () => {
-      if (pollingInterval) clearInterval(pollingInterval);
+      cleanupPaymentProcess();
     };
   }, []);
 
@@ -212,9 +230,15 @@ const Payment = () => {
       return;
     }
 
+    // Reset states and cleanup previous processes
+    cleanupPaymentProcess();
     setLoading(true);
     hideNotification();
     setPaymentStatus('processing');
+    isCancelledRef.current = false;
+
+    // Create new abort controller for this payment session
+    paymentAbortControllerRef.current = new AbortController();
 
     const ref = 'ref-' + Date.now();
     setReference(ref);
@@ -242,16 +266,17 @@ const Payment = () => {
       window.LencoPay.getPaid({
         ...paymentData,
         onSuccess: async (response) => {
+          if (isCancelledRef.current) return;
           setLoading(false);
           await handlePaymentSuccess(response);
         },
         onClose: async () => {
+          if (isCancelledRef.current) return;
           setLoading(false);
-          setPaymentStatus('cancelled');
-          await cancelPayment(ref);
-          showNotification('Payment cancelled. No further notifications will be sent.', 'error', true);
+          await handlePaymentCancellation(ref);
         },
         onConfirmationPending: () => {
+          if (isCancelledRef.current) return;
           setLoading(false);
           setPaymentStatus('pay-offline');
           showNotification('Please authorize the payment on your mobile phone.', 'info');
@@ -266,9 +291,52 @@ const Payment = () => {
     }
   };
 
-  const handlePaymentSuccess = async (response) => {
+  const handlePaymentCancellation = async (ref) => {
+    // Immediately stop all processes
+    isCancelledRef.current = true;
+    cleanupPaymentProcess();
+    
+    setPaymentStatus('cancelled');
+    setReference(null);
+    setOtp('');
+    
+    // Show immediate cancellation message
+    showNotification(
+      'Payment cancelled. All payment processes have been stopped. No further prompts will be sent to your phone.',
+      'error',
+      true
+    );
+
+    // Notify backend about cancellation
     try {
-      const verifyResponse = await fetch(`${API_BASE_URL}/api/payment/verify/${response.reference}`);
+      await axios.post(`${API_BASE_URL}/api/payment/cancel`, 
+        { reference: ref }, 
+        {
+          headers: { 'Content-Type': 'application/json' },
+          signal: paymentAbortControllerRef.current?.signal
+        }
+      );
+      console.log('Payment cancellation confirmed for reference:', ref);
+    } catch (err) {
+      console.log('Cancellation notification sent (backend may process it asynchronously)');
+    }
+
+    // Clear any pending booking data
+    localStorage.removeItem('pendingBooking');
+    
+    // Navigate after short delay
+    setTimeout(() => navigate('/'), 5000);
+  };
+
+  const handlePaymentSuccess = async (response) => {
+    if (isCancelledRef.current) return;
+
+    try {
+      const verifyResponse = await fetch(
+        `${API_BASE_URL}/api/payment/verify/${response.reference}`,
+        { signal: paymentAbortControllerRef.current?.signal }
+      );
+      
       const data = await verifyResponse.json();
 
       if (!verifyResponse.ok && verifyResponse.status !== 401) {
@@ -288,6 +356,10 @@ const Payment = () => {
         startPolling(response.reference);
       }
     } catch (err) {
+      if (err.name === 'AbortError') {
+        console.log('Payment verification aborted');
+        return;
+      }
       console.error('Verification error:', err);
       showNotification('Payment verification failed. Please try again.', 'error', true);
       setPaymentStatus(null);
@@ -295,7 +367,7 @@ const Payment = () => {
   };
 
   const createBooking = async (transactionId, channel = null) => {
-    if (!bus || !seats?.length || !totalPrice || !passengerDetails) {
+    if (isCancelledRef.current || !bus || !seats?.length || !totalPrice || !passengerDetails) {
       showNotification('Booking data incomplete. Contact support with ref: ' + transactionId, 'error', true);
       return;
     }
@@ -327,6 +399,7 @@ const Payment = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+        signal: paymentAbortControllerRef.current?.signal
       });
 
       if (bookingResponse.data.success) {
@@ -335,18 +408,25 @@ const Payment = () => {
         setPaymentStatus('success');
         setReference(transactionId);
         localStorage.removeItem('pendingBooking');
+        cleanupPaymentProcess();
         showNotification('Payment and booking successful!', 'success');
         setTimeout(() => navigate('/bookings'), 3000);
       } else {
         throw new Error(bookingResponse.data.message || 'Booking creation failed');
       }
     } catch (bookingErr) {
+      if (bookingErr.name === 'AbortError') {
+        console.log('Booking creation aborted');
+        return;
+      }
       console.error('Booking creation error:', bookingErr);
       showNotification(`Payment succeeded, but booking failed. Contact support with ref: ${transactionId}`, 'error', true);
     }
   };
 
   const submitOtp = async () => {
+    if (isCancelledRef.current) return;
+    
     if (!/^\d{4,6}$/.test(otp)) {
       showNotification('OTP must be 4-6 digits', 'error');
       return;
@@ -360,6 +440,7 @@ const Payment = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reference, otp }),
+        signal: paymentAbortControllerRef.current?.signal
       });
 
       const data = await response.json();
@@ -380,6 +461,10 @@ const Payment = () => {
         startPolling(reference);
       }
     } catch (err) {
+      if (err.name === 'AbortError') {
+        console.log('OTP submission aborted');
+        return;
+      }
       console.error('OTP submission error:', err);
       showNotification('OTP submission failed. Please try again.', 'error', true);
       setPaymentStatus('pending');
@@ -390,26 +475,53 @@ const Payment = () => {
     }
   };
 
-  const cancelPayment = async (ref) => {
-    try {
-      stopPolling();
-      setPaymentStatus('cancelled');
-      setReference(null);
-      localStorage.removeItem('pendingBooking');
-      await axios.post(`${API_BASE_URL}/api/payment/cancel`, { reference: ref }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    } catch (err) {
-      console.error('Error cancelling payment:', err);
-      showNotification('Failed to cancel payment. Please contact support.', 'error', true);
+  const startPolling = (ref) => {
+    if (isCancelledRef.current || pollingIntervalRef.current) return;
+    
+    const interval = setInterval(() => {
+      if (isCancelledRef.current) {
+        clearInterval(interval);
+        return;
+      }
+      verifyPayment(ref);
+    }, 5000);
+    
+    pollingIntervalRef.current = interval;
+    
+    // Auto-stop polling after 5 minutes
+    setTimeout(() => {
+      if (pollingIntervalRef.current === interval) {
+        stopPolling();
+        if (!isCancelledRef.current && (paymentStatus === 'pending' || paymentStatus === 'pay-offline')) {
+          showNotification(
+            'Payment verification timeout. Please check with support.',
+            'error',
+            true
+          );
+          setPaymentStatus('cancelled');
+        }
+      }
+    }, 300000);
+  };
+
+  const stopPolling = () => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
     }
   };
 
   const verifyPayment = async (ref) => {
+    if (isCancelledRef.current) {
+      stopPolling();
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/payment/verify/${ref}`);
+      const response = await fetch(
+        `${API_BASE_URL}/api/payment/verify/${ref}`,
+        { signal: paymentAbortControllerRef.current?.signal }
+      );
       const data = await response.json();
 
       if (!response.ok && response.status !== 401) {
@@ -423,7 +535,11 @@ const Payment = () => {
         stopPolling();
       } else if (status === 'failed' || status === 'cancelled') {
         setPaymentStatus('cancelled');
-        showNotification('Payment cancelled or failed. No further notifications will be sent.', 'error', true);
+        showNotification(
+          'Payment cancelled or failed. No further notifications will be sent.',
+          'error',
+          true
+        );
         stopPolling();
       } else if (status === 'otp-required') {
         setPaymentStatus('otp-required');
@@ -431,28 +547,11 @@ const Payment = () => {
         stopPolling();
       }
     } catch (err) {
-      console.error('Verification error:', err);
-    }
-  };
-
-  const startPolling = (ref) => {
-    if (pollingInterval) return;
-    const interval = setInterval(() => verifyPayment(ref), 5000);
-    setPollingInterval(interval);
-    
-    setTimeout(() => {
-      stopPolling();
-      if (paymentStatus === 'pending' || paymentStatus === 'pay-offline') {
-        showNotification('Payment verification timeout. Please check with support.', 'error', true);
-        setPaymentStatus(null);
+      if (err.name === 'AbortError') {
+        console.log('Payment verification aborted');
+        return;
       }
-    }, 300000);
-  };
-
-  const stopPolling = () => {
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-      setPollingInterval(null);
+      console.error('Verification error:', err);
     }
   };
 
@@ -465,18 +564,24 @@ const Payment = () => {
     hideNotification();
     setPaymentStatus(null);
     setLoading(false);
+    isCancelledRef.current = false;
   };
 
   const handleCancel = async () => {
-    hideNotification();
     if (reference) {
-      await cancelPayment(reference);
+      await handlePaymentCancellation(reference);
     } else {
       setPaymentStatus('cancelled');
+      isCancelledRef.current = true;
+      cleanupPaymentProcess();
       localStorage.removeItem('pendingBooking');
-      showNotification('Payment cancelled. No further notifications will be sent.', 'error', true);
+      showNotification(
+        'Payment cancelled. No further notifications will be sent.',
+        'error',
+        true
+      );
+      setTimeout(() => navigate('/'), 3000);
     }
-    navigate('/');
   };
 
   return (
@@ -536,7 +641,7 @@ const Payment = () => {
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  disabled={loading}
+                  disabled={loading || isCancelledRef.current}
                   placeholder="Enter 4-6 digit OTP"
                   maxLength="6"
                   required
@@ -545,7 +650,7 @@ const Payment = () => {
                   type="button"
                   className="otp-submit-button"
                   onClick={submitOtp}
-                  disabled={loading || !otp}
+                  disabled={loading || !otp || isCancelledRef.current}
                 >
                   {loading ? 'Verifying...' : 'Verify OTP'}
                 </button>
@@ -561,7 +666,8 @@ const Payment = () => {
                 paymentStatus === 'success' || 
                 paymentStatus === 'otp-required' || 
                 paymentStatus === 'processing' ||
-                paymentStatus === 'cancelled'
+                paymentStatus === 'cancelled' ||
+                isCancelledRef.current
               }
             >
               {loading ? (
@@ -574,7 +680,7 @@ const Payment = () => {
                   <span className="pay-icon"></span>
                   Pay with Lenco
                 </>
-                )}
+              )}
             </button>
           </form>
 
@@ -599,7 +705,7 @@ const Payment = () => {
             <div className="cancelled-status">
               <div className="cancelled-icon">❌</div>
               <h3>Payment Cancelled</h3>
-              <p>No further payment requests will be sent.</p>
+              <p>All payment processes have been stopped. No further payment requests will be sent to your phone.</p>
               <p>Redirecting to homepage...</p>
             </div>
           )}
