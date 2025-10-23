@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../resources/payment.css';
 
-const API_BASE_URL = 'https://busquick.onrender.com';
+const API_BASE_URL =  'https://busquick.onrender.com';
 
 // Notification Component
 const Notification = ({ message, type, onTryAgain, onCancel, show }) => {
@@ -318,37 +318,38 @@ const Payment = () => {
     };
 
     try {
-      const handler = window.LencoPay.setup({
-        ...paymentData,
-        onSuccess: async (response) => {
-          // Check if payment was cancelled before processing success
-          if (isCancelledRef.current) {
-            console.log('Payment was cancelled, ignoring success callback');
-            return;
-          }
-          
-          console.log('Payment onSuccess callback:', response);
-          await handlePaymentSuccess(response);
-        },
-        onCancel: () => {
-          console.log('Payment onCancel callback');
-          setLoading(false);
-          setPaymentStatus(null);
-          showNotification('Payment was cancelled.', 'info');
-        },
-        onError: (error) => {
-          console.error('Payment onError callback:', error);
-          setLoading(false);
-          setPaymentStatus(null);
-          showNotification('Payment failed. Please try again.', 'error', true);
-        },
-        onOtp: (response) => {
-          console.log('Payment onOtp callback - OTP required:', response);
-          setLoading(false);
-          setPaymentStatus('otp-required');
-          showNotification('Check your phone for the OTP.', 'info');
-        },
-      });
+      const handler = window.LencoPay(paymentData);
+
+      handler.onSuccess = async (response) => {
+        // Check if payment was cancelled before processing success
+        if (isCancelledRef.current) {
+          console.log('Payment was cancelled, ignoring success callback');
+          return;
+        }
+        console.log('Payment onSuccess callback:', response);
+        await handlePaymentSuccess(response);
+      };
+
+      handler.onCancel = () => {
+        console.log('Payment onCancel callback');
+        setLoading(false);
+        setPaymentStatus(null);
+        showNotification('Payment was cancelled.', 'info');
+      };
+
+      handler.onError = (error) => {
+        console.error('Payment onError callback:', error);
+        setLoading(false);
+        setPaymentStatus(null);
+        showNotification('Payment failed. Please try again.', 'error', true);
+      };
+
+      handler.onOtp = (response) => {
+        console.log('Payment onOtp callback - OTP required:', response);
+        setLoading(false);
+        setPaymentStatus('otp-required');
+        showNotification('Check your phone for the OTP.', 'info');
+      };
 
       handler.openIframe();
     } catch (err) {
@@ -706,7 +707,7 @@ const Payment = () => {
                 </>
               ) : (
                 <>
-                  <span className="pay-icon">💳</span>
+                  <span className="pay-icon"></span>
                   Pay with Lenco
                 </>
               )}
