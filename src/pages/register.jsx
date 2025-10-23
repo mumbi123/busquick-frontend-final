@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, message, Button } from 'antd';
+import { Form, Input, message, Button, Row, Col } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -18,7 +18,6 @@ function Register() {
       dispatch(showLoading());
       const response = await axios.post(`${baseURL}/api/users/register`, values);
       dispatch(hideLoading());
-
       if (response.data.success) {
         message.success(response.data.message);
         navigate('/login');
@@ -36,15 +35,31 @@ function Register() {
     <div className="auth-container">
       <h3>Register</h3>
       <Form layout="vertical" onFinish={onFinish}>
-        <div className="auth-form-group">
-          <Form.Item
-            label={<label>Name</label>}
-            name="name"
-            rules={[{ required: true, message: 'Please input your name!' }]}
-          >
-            <Input className="auth-input" placeholder="Enter your full name" />
-          </Form.Item>
-        </div>
+        <Row gutter={16}>
+          <Col xs={24} sm={12}>
+            <div className="auth-form-group">
+              <Form.Item
+                label={<label>First Name</label>}
+                name="firstName"
+                rules={[{ required: true, message: 'Please input your first name!' }]}
+              >
+                <Input className="auth-input" placeholder="Enter your first name" />
+              </Form.Item>
+            </div>
+          </Col>
+          <Col xs={24} sm={12}>
+            <div className="auth-form-group">
+              <Form.Item
+                label={<label>Last Name</label>}
+                name="lastName"
+                rules={[{ required: true, message: 'Please input your last name!' }]}
+              >
+                <Input className="auth-input" placeholder="Enter your last name" />
+              </Form.Item>
+            </div>
+          </Col>
+        </Row>
+
         <div className="auth-form-group">
           <Form.Item
             label={<label>Email</label>}
@@ -54,6 +69,7 @@ function Register() {
             <Input className="auth-input" placeholder="Enter your email" />
           </Form.Item>
         </div>
+
         <div className="auth-form-group">
           <Form.Item
             label={<label>Password</label>}
@@ -66,9 +82,11 @@ function Register() {
             <Input.Password className="auth-input" placeholder="Create a password" />
           </Form.Item>
         </div>
+
         <Button type="primary" htmlType="submit" className="auth-btn">
           Register
         </Button>
+
         <div className="auth-switch">
           Already have an account?{' '}
           <button onClick={() => navigate('/login')}>Login here</button>
