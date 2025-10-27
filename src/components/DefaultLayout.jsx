@@ -14,6 +14,16 @@ const ADMIN_ROLE = 'admin';
 const USER_ROLE = 'user';
 const VENDOR_ROLE = 'vendor';
 
+// Time-based greetings configuration
+const GREETING_TIMES = [
+  { id: 1, start: "00:00", end: "03:59", greeting: "You're up late" },
+  { id: 2, start: "04:00", end: "05:59", greeting: "Early Bird" },
+  { id: 3, start: "06:00", end: "11:59", greeting: "Good Morning" },
+  { id: 4, start: "12:00", end: "16:59", greeting: "Good Afternoon" },
+  { id: 5, start: "17:00", end: "19:59", greeting: "Good Evening" },
+  { id: 6, start: "20:00", end: "23:59", greeting: "Good Night" }
+];
+
 function DefaultLayout({ children }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -29,6 +39,20 @@ function DefaultLayout({ children }) {
 
   // Sidebar state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Get time-based greeting
+  const getTimeBasedGreeting = () => {
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    for (const slot of GREETING_TIMES) {
+      if (currentTime >= slot.start && currentTime <= slot.end) {
+        return slot.greeting;
+      }
+    }
+    
+    return "Welcome"; // Fallback
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -177,8 +201,8 @@ function DefaultLayout({ children }) {
             <h1 className="logo">BusQuick</h1>
             <h6 className="role">
               {user
-                ? `Welcome, ${user.name}`
-                : 'Welcome, Guest'}
+                ? `${getTimeBasedGreeting()}, ${user.name}`
+                : `${getTimeBasedGreeting()}, Guest`}
             </h6>
           </div>
 
@@ -342,4 +366,3 @@ function DefaultLayout({ children }) {
 }
 
 export default DefaultLayout;
- 
