@@ -177,7 +177,7 @@ function DefaultLayout({ children }) {
             <h1 className="logo">BusQuick</h1>
             <h6 className="role">
               {user
-                ? `${user.role === 'vendor' ? 'Operator' : user.role}: ${user.name}`
+                ? `Welcome, ${user.name}`
                 : 'Welcome, Guest'}
             </h6>
           </div>
