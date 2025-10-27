@@ -17,7 +17,7 @@ const VENDOR_ROLE = 'vendor';
 // Time-based greetings configuration
 const GREETING_TIMES = [
   { id: 1, start: "00:00", end: "03:59", greeting: "You're up late" },
-  { id: 2, start: "04:00", end: "05:59", greeting: "Early Bird" },
+  { id: 2, start: "04:00", end: "05:59", greeting: "Rise and Rde" },
   { id: 3, start: "06:00", end: "11:59", greeting: "Good Morning" },
   { id: 4, start: "12:00", end: "16:59", greeting: "Good Afternoon" },
   { id: 5, start: "17:00", end: "19:59", greeting: "Good Evening" },
@@ -52,6 +52,12 @@ function DefaultLayout({ children }) {
     }
     
     return "Welcome"; // Fallback
+  };
+
+  // Capitalize first letter of name
+  const capitalizeFirstLetter = (name) => {
+    if (!name) return '';
+    return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
   // Close dropdown when clicking outside
@@ -201,7 +207,7 @@ function DefaultLayout({ children }) {
             <h1 className="logo">BusQuick</h1>
             <h6 className="role">
               {user
-                ? `${getTimeBasedGreeting()}, ${user.name}`
+                ? `${getTimeBasedGreeting()}, ${capitalizeFirstLetter(user.name)}`
                 : `${getTimeBasedGreeting()}, Guest`}
             </h6>
           </div>
