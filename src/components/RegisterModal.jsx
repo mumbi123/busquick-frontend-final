@@ -1,11 +1,12 @@
 import React from 'react';
 import { Modal } from 'antd';
-import Register from '../pages/register';
-import '../resources/registerloginmodal.css';
+import Register from '../pages/Register';
+import '../resources/auth.css';
 
-function RegisterModal({ visible, onCancel, onSuccess }) {
+function RegisterModal({ visible, onCancel, onSuccess, onSwitchToLogin }) {
   return (
     <Modal
+      title={null}
       open={visible}
       onCancel={onCancel}
       footer={null}
@@ -20,11 +21,15 @@ function RegisterModal({ visible, onCancel, onSuccess }) {
         <button className="auth-close" onClick={onCancel}>
           &times;
         </button>
-        <div className="auth-header">
-          <h2>Join BusQuick</h2>
-          <p>Create your account and start booking</p>
+        <div className="auth-header"> 
+          <h2>Create Account</h2>
+          <p>Join us today and start your journey</p>
         </div>
-        <Register onSuccess={onSuccess} />
+        <Register 
+          onSuccess={onSuccess} 
+          isModal={true}
+          onSwitchToLogin={onSwitchToLogin}
+        />
       </div>
     </Modal>
   );
