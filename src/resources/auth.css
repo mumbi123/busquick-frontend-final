@@ -1,0 +1,804 @@
+/* Unified Authentication CSS - For both Modal and Page versions */
+
+:root {
+  --primary-green: #10B981;
+  --dark-green: #047857;
+  --light-green: #34D399;
+  --accent-green: #A7F3D0;
+  --text-dark: #1F2937;
+  --text-light: #6B7280;
+  --white: #FFFFFF;
+  --border-radius: 12px;
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+}
+
+/* Reset and base styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', 'Montserrat', sans-serif;
+}
+
+/* ========================================
+   MODAL STYLES
+   ======================================== */
+
+/* Modal Wrapper */
+.auth-modal-wrapper {
+  z-index: 1050;
+}
+
+.auth-modal .ant-modal-content {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  border: none;
+  padding: 0;
+}
+
+.auth-modal .ant-modal-body {
+  padding: 0;
+  margin: 0;
+}
+
+/* Modal Mask */
+.auth-modal-wrapper .ant-modal-mask {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* ========================================
+   DROPDOWN STYLES (Header dropdown)
+   ======================================== */
+
+.auth-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0.5rem;
+}
+
+.auth-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Overlay for dropdown */
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.auth-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Menu item positioning for dropdown */
+.menu-item {
+  position: relative;
+}
+
+/* ========================================
+   SHARED CARD STYLES (Modal & Dropdown)
+   ======================================== */
+
+.auth-dropdown-card,
+.auth-container {
+  position: relative;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* For dropdown version */
+.auth-dropdown-card {
+  width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+}
+
+/* For standalone page version */
+.auth-container {
+  max-width: 450px;
+  margin: 3rem auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.auth-dropdown-card::before,
+.auth-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+}
+
+.auth-dropdown-card::after,
+.auth-container::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.02) 0%, transparent 70%);
+  pointer-events: none;
+  animation: modalGlow 3s ease-in-out infinite alternate;
+}
+
+/* ========================================
+   HEADER STYLES
+   ======================================== */
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 5;
+}
+
+.auth-header h2,
+.auth-container h3 {
+  color: var(--text-dark);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.auth-header p {
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ========================================
+   CLOSE BUTTON
+   ======================================== */
+
+.auth-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.auth-close:hover {
+  background: var(--primary-green);
+  color: var(--white);
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* ========================================
+   GOOGLE SIGN-IN BUTTON
+   ======================================== */
+
+.google-btn {
+  width: 100%;
+  height: 48px;
+  background: var(--white) !important;
+  border: 2px solid rgba(16, 185, 129, 0.2) !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: var(--text-dark) !important;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 5;
+}
+
+.google-btn:hover {
+  border-color: var(--primary-green) !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+  color: var(--primary-green) !important;
+}
+
+.google-btn .anticon {
+  font-size: 1.25rem;
+}
+
+/* ========================================
+   DIVIDER
+   ======================================== */
+
+.auth-dropdown-card .ant-divider,
+.auth-container .ant-divider {
+  margin: 1.5rem 0;
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.auth-dropdown-card .ant-divider-inner-text,
+.auth-container .ant-divider-inner-text {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ========================================
+   FORM STYLES
+   ======================================== */
+
+.auth-dropdown-card .ant-form,
+.auth-dropdown-card form,
+.auth-container .ant-form,
+.auth-container form {
+  position: relative;
+  z-index: 5;
+}
+
+/* Form Items */
+.auth-dropdown-card .ant-form-item,
+.auth-container .ant-form-item,
+.auth-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.auth-dropdown-card .ant-form-item-label > label,
+.auth-container .ant-form-item-label > label,
+.auth-form-group label {
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* ========================================
+   INPUT FIELDS
+   ======================================== */
+
+.auth-dropdown-card .ant-input,
+.auth-dropdown-card .ant-input-password,
+.auth-dropdown-card .ant-select-selector,
+.auth-container .ant-input,
+.auth-container .ant-input-password,
+.auth-container .ant-select-selector,
+.auth-input {
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  background: var(--white);
+  transition: var(--transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  width: 100%;
+  color: var(--text-dark);
+}
+
+.auth-dropdown-card .ant-input:focus,
+.auth-dropdown-card .ant-input-password:focus,
+.auth-dropdown-card .ant-select-focused .ant-select-selector,
+.auth-container .ant-input:focus,
+.auth-container .ant-input-password:focus,
+.auth-container .ant-select-focused .ant-select-selector,
+.auth-input:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  outline: none;
+}
+
+.auth-dropdown-card .ant-input:hover,
+.auth-dropdown-card .ant-input-password:hover,
+.auth-dropdown-card .ant-select:hover .ant-select-selector,
+.auth-container .ant-input:hover,
+.auth-container .ant-input-password:hover,
+.auth-container .ant-select:hover .ant-select-selector,
+.auth-input:hover {
+  border-color: var(--light-green);
+}
+
+.auth-input::placeholder {
+  color: #9ca3af;
+}
+
+/* Password Input */
+.auth-dropdown-card .ant-input-password .ant-input,
+.auth-container .ant-input-password .ant-input {
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+.auth-dropdown-card .ant-input-password .anticon,
+.auth-container .ant-input-password .anticon {
+  color: var(--text-light);
+}
+
+.auth-dropdown-card .ant-input-password .anticon:hover,
+.auth-container .ant-input-password .anticon:hover {
+  color: var(--primary-green);
+}
+
+/* Select Dropdown */
+.auth-dropdown-card .ant-select,
+.auth-container .ant-select {
+  width: 100%;
+}
+
+.auth-dropdown-card .ant-select-arrow,
+.auth-container .ant-select-arrow {
+  color: var(--text-light);
+}
+
+/* ========================================
+   SUBMIT BUTTON
+   ======================================== */
+
+.auth-dropdown-card .ant-btn-primary,
+.auth-dropdown-card button[type="submit"],
+.auth-container .ant-btn-primary,
+.auth-container button[type="submit"],
+.auth-btn,
+.submit-btn {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--white);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-dropdown-card .ant-btn-primary:hover,
+.auth-dropdown-card button[type="submit"]:hover,
+.auth-container .ant-btn-primary:hover,
+.auth-container button[type="submit"]:hover,
+.auth-btn:hover,
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+}
+
+.auth-dropdown-card .ant-btn-primary:active,
+.auth-dropdown-card button[type="submit"]:active,
+.auth-container .ant-btn-primary:active,
+.auth-container button[type="submit"]:active,
+.auth-btn:active,
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.auth-dropdown-card .ant-btn-primary::before,
+.auth-dropdown-card button[type="submit"]::before,
+.auth-container .ant-btn-primary::before,
+.auth-container button[type="submit"]::before,
+.auth-btn::before,
+.submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
+
+.auth-dropdown-card .ant-btn-primary:hover::before,
+.auth-dropdown-card button[type="submit"]:hover::before,
+.auth-container .ant-btn-primary:hover::before,
+.auth-container button[type="submit"]:hover::before,
+.auth-btn:hover::before,
+.submit-btn:hover::before {
+  left: 100%;
+}
+
+/* ========================================
+   LOADING STATE
+   ======================================== */
+
+.auth-dropdown-card .ant-btn-loading,
+.auth-container .ant-btn-loading,
+.auth-btn.loading,
+.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.auth-dropdown-card .ant-btn-loading .anticon,
+.auth-container .ant-btn-loading .anticon,
+.auth-btn.loading::after {
+  animation: spin 1s linear infinite;
+}
+
+.auth-btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+}
+
+/* ========================================
+   LINKS & SWITCH AUTH MODE
+   ======================================== */
+
+.auth-dropdown-card a,
+.auth-container a,
+.link-btn {
+  color: var(--primary-green);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.auth-dropdown-card a:hover,
+.auth-container a:hover,
+.link-btn:hover {
+  color: var(--dark-green);
+  text-decoration: underline;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(16, 185, 129, 0.1);
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+.auth-switch p {
+  color: var(--text-light);
+  margin: 0;
+}
+
+.auth-switch button {
+  background: none;
+  border: none;
+  color: var(--primary-green);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: var(--transition);
+  font-size: 0.95rem;
+}
+
+.auth-switch button:hover {
+  color: var(--dark-green);
+  transform: scale(1.02);
+}
+
+/* ========================================
+   ERROR & SUCCESS MESSAGES
+   ======================================== */
+
+.auth-dropdown-card .ant-form-item-explain-error,
+.auth-container .ant-form-item-explain-error,
+.auth-error,
+.error-message {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-error::before {
+  content: '⚠';
+  font-size: 0.9rem;
+}
+
+.auth-dropdown-card .success-message,
+.auth-container .success-message,
+.success-message {
+  color: var(--primary-green);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-green);
+  margin-bottom: 1rem;
+}
+
+/* ========================================
+   FORM VALIDATION
+   ======================================== */
+
+.auth-dropdown-card .ant-form-item-has-error .ant-input,
+.auth-dropdown-card .ant-form-item-has-error .ant-input-password,
+.auth-dropdown-card .ant-form-item-has-error .ant-select-selector,
+.auth-container .ant-form-item-has-error .ant-input,
+.auth-container .ant-form-item-has-error .ant-input-password,
+.auth-container .ant-form-item-has-error .ant-select-selector {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+}
+
+.auth-dropdown-card .ant-form-item-has-success .ant-input,
+.auth-dropdown-card .ant-form-item-has-success .ant-input-password,
+.auth-dropdown-card .ant-form-item-has-success .ant-select-selector,
+.auth-container .ant-form-item-has-success .ant-input,
+.auth-container .ant-form-item-has-success .ant-input-password,
+.auth-container .ant-form-item-has-success .ant-select-selector {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+}
+
+/* ========================================
+   CHECKBOX & RADIO
+   ======================================== */
+
+.auth-dropdown-card .ant-checkbox-wrapper,
+.auth-container .ant-checkbox-wrapper {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.auth-dropdown-card .ant-checkbox-checked .ant-checkbox-inner,
+.auth-container .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.auth-dropdown-card .ant-checkbox:hover .ant-checkbox-inner,
+.auth-dropdown-card .ant-checkbox-input:focus + .ant-checkbox-inner,
+.auth-container .ant-checkbox:hover .ant-checkbox-inner,
+.auth-container .ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: var(--primary-green);
+}
+
+.auth-dropdown-card .ant-radio-button-wrapper,
+.auth-container .ant-radio-button-wrapper {
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  color: var(--text-dark);
+  background: var(--white);
+  transition: var(--transition);
+}
+
+.auth-dropdown-card .ant-radio-button-wrapper:hover,
+.auth-container .ant-radio-button-wrapper:hover {
+  border-color: var(--light-green);
+  color: var(--primary-green);
+}
+
+.auth-dropdown-card .ant-radio-button-wrapper-checked,
+.auth-container .ant-radio-button-wrapper-checked {
+  background: var(--primary-green);
+  border-color: var(--primary-green);
+  color: var(--white);
+}
+
+.auth-dropdown-card .ant-radio-button-wrapper:first-child,
+.auth-container .ant-radio-button-wrapper:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.auth-dropdown-card .ant-radio-button-wrapper:last-child,
+.auth-container .ant-radio-button-wrapper:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+/* ========================================
+   FOCUS & DISABLED STATES
+   ======================================== */
+
+.auth-dropdown-card .ant-input:focus-visible,
+.auth-dropdown-card .ant-btn:focus-visible,
+.auth-dropdown-card button:focus-visible,
+.auth-container .ant-input:focus-visible,
+.auth-container .ant-btn:focus-visible,
+.auth-container button:focus-visible {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.auth-dropdown-card .ant-input:disabled,
+.auth-dropdown-card .ant-btn:disabled,
+.auth-dropdown-card button:disabled,
+.auth-container .ant-input:disabled,
+.auth-container .ant-btn:disabled,
+.auth-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   CUSTOM SCROLLBAR
+   ======================================== */
+
+.auth-dropdown-card::-webkit-scrollbar,
+.auth-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-dropdown-card::-webkit-scrollbar-track,
+.auth-container::-webkit-scrollbar-track {
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 3px;
+}
+
+.auth-dropdown-card::-webkit-scrollbar-thumb,
+.auth-container::-webkit-scrollbar-thumb {
+  background: var(--primary-green);
+  border-radius: 3px;
+}
+
+.auth-dropdown-card::-webkit-scrollbar-thumb:hover,
+.auth-container::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-green);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes modalGlow {
+  0% { opacity: 0.02; }
+  100% { opacity: 0.05; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-dropdown-card,
+.auth-container {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .auth-modal .ant-modal-content {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .auth-dropdown {
+    right: -50px;
+  }
+
+  .auth-dropdown-card {
+    width: 340px;
+    padding: 1.5rem;
+    min-height: 350px;
+  }
+
+  .auth-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+
+  .auth-header h2,
+  .auth-container h3 {
+    font-size: 1.5rem;
+  }
+
+  .auth-header p {
+    font-size: 0.9rem;
+  }
+
+  .auth-dropdown-card .ant-form-item,
+  .auth-container .ant-form-item,
+  .auth-form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .auth-dropdown-card .ant-btn-primary,
+  .auth-dropdown-card button[type="submit"],
+  .auth-container .ant-btn-primary,
+  .auth-container button[type="submit"],
+  .auth-btn,
+  .submit-btn {
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  .google-btn {
+    height: 44px;
+    font-size: 0.95rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-modal .ant-modal-content {
+    margin: 0.5rem;
+    max-width: calc(100vw - 1rem);
+  }
+
+  .auth-dropdown {
+    right: -80px;
+  }
+
+  .auth-dropdown-card {
+    width: 300px;
+    padding: 1.25rem;
+    min-height: 320px;
+  }
+
+  .auth-container {
+    margin: 1rem 0.5rem;
+    padding: 1.25rem;
+  }
+
+  .auth-header h2,
+  .auth-container h3 {
+    font-size: 1.3rem;
+  }
+
+  .auth-close {
+    width: 28px;
+    height: 28px;
+    font-size: 1.3rem;
+  }
+}
