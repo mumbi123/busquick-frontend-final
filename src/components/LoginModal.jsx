@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal } from 'antd';
 import Login from '../pages/login';
-import '../resources/registerloginmodal.css';
+import '../resources/auth.css';
 
-function LoginModal({ visible, onCancel, onSuccess }) {
+function LoginModal({ visible, onCancel, onSuccess, onSwitchToRegister }) {
   return (
     <Modal
       title={null}
@@ -21,11 +21,15 @@ function LoginModal({ visible, onCancel, onSuccess }) {
         <button className="auth-close" onClick={onCancel}>
           &times;
         </button>
-        <div className="auth-header">
+        <div className="auth-header"> 
           <h2>Welcome Back</h2>
           <p>Sign in to your account to continue</p>
         </div>
-        <Login onSuccess={onSuccess} />
+        <Login 
+          onSuccess={onSuccess} 
+          isModal={true}
+          onSwitchToRegister={onSwitchToRegister}
+        />
       </div>
     </Modal>
   );
