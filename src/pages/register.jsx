@@ -184,4 +184,4 @@ function Register({ onSuccess, isModal = false, onSwitchToLogin }) {
   );
 } 
 
-export default Register;
+export default Register; 
