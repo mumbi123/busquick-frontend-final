@@ -1,435 +1,310 @@
-.pdf-ticket-container {
-  width: 842px;
-  height: 395px;
-  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
-  font-family: 'Arial', sans-serif;
-  position: relative;
-  overflow: hidden;
-  border: 2px solid #000000;
+/* Ticket Container */
+.ticket-container {
+  width: 210mm;
+  min-height: auto;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  padding: 20mm 15mm;
   box-sizing: border-box;
+  color: #000000;
 }
 
-/* Header Section */
-.pdf-ticket-header {
-  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
-  color: #FFFFFF;
-  padding: 8px 20px;
+/* Header */
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.company-logo {
+  max-width: 375px;
+  height: auto;
+  object-fit: contain;
+}
+
+.booking-info {
+  text-align: right;
+}
+
+.booking-number {
+  font-size: 12px;
+  color: #000000;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.booking-date {
+  font-size: 12px;
+  color: #000000;
+  opacity: 0.7;
+}
+
+/* Ticket Title Row */
+.ticket-title-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
-  font-size: 12px;
-  border-bottom: 1px dashed #FFFFFF;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #000000;
 }
 
-.company-name {
-  font-size: 14px;
-  font-weight: 900;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.ticket-type {
-  font-size: 14px;
+/* Ticket Title */
+.ticket-title {
+  font-size: 18px;
   font-weight: 700;
+  color: #000000;
+  opacity: 0.9;
+}
+
+/* Bus Info in Header */
+.bus-info-header {
+  font-size: 15px;
+  font-weight: 700;
+  color: #000000;
   text-transform: uppercase;
 }
 
-.thank-you {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.seat-number-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 10px;
-  background: #4CAF50;
-  padding: 5px;
-  border-radius: 3px;
-  color: #FFFFFF;
-}
-
-.seat-display {
-  font-size: 16px;
-  font-weight: 900;
-  margin-top: 2px;
-  color: #FFFFFF;
-}
-
-/* Main Body */
-.pdf-ticket-body {
-  background: #FFFFFF;
-  height: calc(100% - 60px);
-  display: flex;
-  position: relative;
-  border: 1px solid #CCCCCC;
+/* Main Grid Layout */
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
 }
 
 /* Left Section */
-.pdf-left-section {
-  width: 120px;
-  background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
-  color: #FFFFFF;
+.left-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  gap: 15px;
 }
 
-.seat-number-large {
-  margin-bottom: 20px;
+.info-row {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
 }
 
-.seat-letter {
-  font-size: 48px;
-  font-weight: 900;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  color: #FFFFFF;
+.info-label {
+  color: #000000;
+  opacity: 0.7;
+  min-width: 120px;
 }
 
-.busquick-logo {
+.info-value {
+  color: #000000;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.section-heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.itinerary-route {
+  font-size: 13px;
+  color: #000000;
+  font-weight: 400;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.route-highlight {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.itinerary-detail {
+  font-size: 12px;
+  color: #000000;
+  margin-bottom: 4px;
+}
+
+/* Payment Table */
+.payment-table {
   margin-top: 10px;
 }
 
-.logo-circle {
-  width: 80px;
-  height: 80px;
-  background: #2E7D32;
-  border-radius: 50%;
+.payment-row {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #000000;
+  opacity: 0.3;
+}
+
+.payment-row:last-child {
+  border-bottom: none;
+}
+
+.payment-item {
+  color: #000000;
+  opacity: 0.7;
+}
+
+.payment-amount {
+  color: #000000;
+  font-weight: 600;
+}
+
+.total-row {
+  border-top: 2px solid #000000;
+  padding-top: 10px;
+  margin-top: 5px;
+  opacity: 1;
+}
+
+.total-row .payment-item {
+  color: #000000;
+  font-weight: 700;
+}
+
+.total-amount {
+  color: #000000;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Right Section - Seat Map */
+.right-section {
+  display: flex;
   justify-content: center;
-  border: 3px solid #FFFFFF;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  align-items: flex-start;
 }
 
-.logo-text {
-  font-size: 12px;
-  font-weight: 900;
-  text-align: center;
-  line-height: 1.1;
-  letter-spacing: 0.5px;
-  color: #FFFFFF;
-  text-transform: uppercase;
-}
-
-/* Decorative elements on left section */
-.pdf-left-section::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background: linear-gradient(45deg, #FFC107 0%, #FF9800 50%, #4CAF50 100%);
-  clip-path: polygon(0 100%, 100% 100%, 100% 0);
-}
-
-/* Middle Section */
-.pdf-middle-section {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.bus-info {
-  margin-bottom: 20px;
-}
-
-.bus-info .info-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 11px;
-}
-
-.bus-info .label {
-  font-weight: 600;
-  color: #333333;
-}
-
-.bus-info .value {
-  font-weight: 700;
-  color: #000000;
-}
-
-.bus-icon {
-  text-align: center;
-  margin: 20px 0;
-}
-
-.bus-graphic {
-  font-size: 32px;
-  /* Replace with actual bus image if available */
-  background: url('bus-icon.png') no-repeat center;
-  width: 100px;
-  height: 32px;
-  display: inline-block;
-}
-
-.journey-info {
-  flex: 1;
-}
-
-.departure-arrival {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.departure, .arrival {
+.seat-map-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-}
-
-.departure .label, .arrival .label {
-  font-size: 10px;
-  font-weight: 600;
-  color: #666666;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-}
-
-.departure .city, .arrival .city {
-  font-size: 18px;
-  font-weight: 900;
-  color: #000000;
-  margin-bottom: 2px;
-  text-transform: uppercase;
-}
-
-.departure .location, .arrival .location {
-  font-size: 9px;
-  font-weight: 600;
-  color: #333333;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-}
-
-.departure .time, .arrival .time {
-  font-size: 12px;
-  font-weight: 700;
-  color: #4CAF50;
-}
-
-.arrow {
-  font-size: 24px;
-  color: #4CAF50;
-  font-weight: 900;
-  margin: 0 20px;
-}
-
-/* Right Section */
-.pdf-right-section {
-  width: 200px;
+  border: 1px solid #000000;
+  opacity: 0.5;
+  border-radius: 8px;
   padding: 15px;
-  border-left: 1px dashed #CCCCCC;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.ticket-info .info-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 10px;
-}
-
-.ticket-info .label {
-  font-weight: 600;
-  color: #333333;
-}
-
-.ticket-info .value {
-  font-weight: 700;
-  color: #000000;
-}
-
-.qr-code {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
-}
-
-.qr-placeholder {
-  width: 80px;
-  height: 80px;
-  background: #000000;
-  position: relative;
-  border-radius: 4px;
-}
-
-.qr-pattern {
-  width: 100%;
-  height: 100%;
-  background-image: 
-    repeating-linear-gradient(45deg, transparent, transparent 2px, #FFFFFF 2px, #FFFFFF 4px),
-    repeating-linear-gradient(-45deg, transparent, transparent 2px, #FFFFFF 2px, #FFFFFF 4px);
-  border-radius: 4px;
-}
-
-.passenger-details {
-  font-size: 10px;
-}
-
-.details-label {
-  font-weight: 700;
-  color: #333333;
-  display: block;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #EEEEEE;
-  padding-bottom: 4px;
-  text-transform: uppercase;
-}
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.detail-label {
-  font-weight: 600;
-  color: #666666;
-}
-
-.detail-value {
-  font-weight: 700;
-  color: #000000;
-}
-
-/* Seat Map Section (Right edge) */
-.pdf-seat-map-section {
-  width: 60px;
-  background: #F5F5F5;
-  border-left: 1px solid #DDDDDD;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 5px;
-  position: relative;
+  width: auto;
 }
 
 .seat-map-header {
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
-  color: #FFFFFF;
-  background: #4CAF50;
-  padding: 2px 8px;
-  border-radius: 2px;
+  color: #000000;
+  text-align: center;
   margin-bottom: 10px;
   text-transform: uppercase;
 }
 
-.seat-grid {
+.seat-map {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  margin-bottom: 15px;
+  gap: 3px;
 }
 
 .seat-row {
   display: flex;
-  gap: 1px;
+  gap: 3px;
   justify-content: center;
 }
 
-.mini-seat {
-  width: 8px;
-  height: 8px;
-  background: #E0E0E0;
-  border-radius: 1px;
-  font-size: 4px;
+.seat-row.last-row {
+  margin-top: 2px;
+}
+
+.seat {
+  width: 16px;
+  height: 18px;
+  border: 1px solid #000000;
+  opacity: 0.4;
+  border-radius: 4px 4px 2px 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: transparent;
-  border: 0.5px solid #CCCCCC;
-}
-
-.mini-seat.booked {
-  background: #4CAF50;
-  border-color: #2E7D32;
-}
-
-.mini-aisle {
-  width: 3px;
-}
-
-.barcode {
-  margin: 10px 0;
-}
-
-.barcode-lines {
-  width: 40px;
-  height: 20px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    #000000 0px,
-    #000000 1px,
-    transparent 1px,
-    transparent 2px,
-    #000000 2px,
-    #000000 3px,
-    transparent 3px,
-    transparent 5px
-  );
-}
-
-.ticket-number-bottom {
-  font-size: 6px;
+  font-size: 7px;
+  background: #ffffff;
+  color: #000000;
   font-weight: 600;
-  color: #333333;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  margin-top: 10px;
+  position: relative;
+}
+
+.seat::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -1px;
+  right: -1px;
+  height: 4px;
+  background: inherit;
+  border: 1px solid #000000;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  opacity: inherit;
+}
+
+.seat.booked {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+  opacity: 1;
+}
+
+.seat.booked::before {
+  background: #000000;
+  border-color: #000000;
+}
+
+.aisle {
+  width: 8px;
 }
 
 /* Footer */
-.pdf-ticket-footer {
-  position: absolute;
-  bottom: 10px;
-  left: 130px;
-  right: 10px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 8px;
-  color: #666666;
-  padding: 0 20px;
+.ticket-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #000000;
+  opacity: 0.5;
 }
 
-.footer-left p {
-  margin: 0;
-  line-height: 1.2;
+.footer-info {
+  font-size: 11px;
+  color: #000000;
+  opacity: 0.7;
+  line-height: 1.5;
+  margin-bottom: 10px;
 }
 
-.footer-right {
-  text-align: right;
+.footer-info strong {
+  color: #000000;
+  opacity: 1;
 }
 
-.contact-info p {
-  margin: 0;
-  line-height: 1.2;
+.footer-status {
+  text-align: center;
+  font-size: 12px;
+  color: #000000;
+  opacity: 0.7;
+}
+
+.footer-status strong {
+  color: #000000;
+  font-weight: 700;
+  font-size: 13px;
+  opacity: 1;
 }
 
 /* Download Button */
-.download-pdf-button {
+.download-pdf-button-compact {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   padding: 12px 24px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -438,22 +313,28 @@
   box-shadow: 0 2px 12px rgba(16, 185, 129, 0.3);
 }
 
-.download-pdf-button:hover {
+.download-pdf-button-compact:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
-/* Print and PDF specific styles */
+.download-pdf-button-compact:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Print and PDF specific styles */ 
 @media print {
-  .pdf-ticket-container {
-    width: 842px !important;
-    height: 395px !important;
+  .ticket-container {
+    width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 20mm 15mm !important;
     page-break-inside: avoid;
   }
   
-  .download-pdf-button {
+  .download-pdf-button-compact {
     display: none;
   }
 }
