@@ -36,3 +36,4 @@ function RegisterModal({ visible, onCancel, onSuccess, onSwitchToLogin }) {
 }
 
 export default RegisterModal;
+ 
