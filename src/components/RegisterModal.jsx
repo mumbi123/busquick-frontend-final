@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
-import Register from '../pages/Register';
+import Register from '../pages/register';
 import '../resources/auth.css';
 
 function RegisterModal({ visible, onCancel, onSuccess, onSwitchToLogin }) {
