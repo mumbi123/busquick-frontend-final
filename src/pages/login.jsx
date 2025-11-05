@@ -163,4 +163,4 @@ function Login({ onSuccess, isModal = false, onSwitchToRegister }) {
   );
 }
 
-export default Login;
+export default Login; 
