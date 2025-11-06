@@ -109,10 +109,10 @@ function Footer() {
               </a>
               <a
                 href="https://www.tiktok.com/@busquick.tickets?_r=1&_t=ZM-91BPfKe3vIa"
-                onClick={(e) => e.preventDefault()}
-                aria-label="TikTok"
-                className="social-link "
-                title="Coming soon"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="tiktok"
+                className="social-link"
               >
                 <FaTiktok />
               </a>
