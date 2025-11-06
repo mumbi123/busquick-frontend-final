@@ -7,7 +7,7 @@ const Partners = () => {
     { id: 1, name: 'POWERTOOLS LOGISTICS', icon: Bus },
     { id: 2, name: 'UNITED BUSES ZAMBIA (UBZ)', icon: Bus },
     { id: 3, name: 'SHALOM BUS SERVICES', icon: Bus },
-    { id: 4, name: 'ABDRICH COACH SERVICES', icon: Bus },
+    { id: 4, name: 'ANDRICH COACH SERVICES', icon: Bus },
     { id: 5, name: 'LIKLI MOTORS', icon: Bus },
     { id: 6, name: 'POSTBUS', icon: Bus }
   ];
