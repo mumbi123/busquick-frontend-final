@@ -1,256 +1,238 @@
-.footer {
-  background: linear-gradient(to right, var(--primary-dark), var(--primary));
-  color: white;
-  padding: 4rem 0 2rem;
-  width: 100%;
-  position: relative;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
-  box-shadow: var(--shadow-lg);
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaEnvelope, FaPhone, FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
+import { Modal, Form, Input, message, Button } from 'antd';
+import { useDispatch } from 'react-redux';
+import { showLoading, hideLoading } from '../redux/alertsSlice';
+import axios from 'axios';
+import '../resources/footer.css';
+
+const baseURL = 'https://busquick.onrender.com';
+
+function Footer() {
+  const currentYear = new Date().getFullYear();
+  const [isVendorModalVisible, setIsVendorModalVisible] = useState(false);
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+
+  const showVendorModal = () => {
+    setIsVendorModalVisible(true);
+  };
+
+  const handleVendorModalCancel = () => {
+    setIsVendorModalVisible(false);
+    form.resetFields();
+  };
+
+  const onFinishVendorRegistration = async (values) => {
+    try {
+      dispatch(showLoading());
+      const response = await axios.post(`${baseURL}/api/users/vendor-register`, values);
+      dispatch(hideLoading());
+
+      if (response.data.success) {
+        message.success(response.data.message);
+        setIsVendorModalVisible(false);
+        form.resetFields();
+      } else {
+        message.error(response.data.message);
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      message.error(error.response?.data?.message || 'Vendor registration failed. Please try again.');
+      console.error('Vendor registration error:', error);
+    }
+  };
+
+  return (
+    <>
+      <footer className="footer">
+        <div className="footer-container">
+          <div className="footer-content">
+            {/* Company Info */}
+            <div className="footer-section footer-brand">
+              <h3 className="footer-logo">BusQuick</h3>
+              <p className="footer-tagline">Your trusted partner for seamless bus booking across Zambia.</p>
+            </div>
+
+            {/* Quick Links */}
+            <div className="footer-section">
+              <h4 className="footer-heading">Quick Links</h4>
+              <ul className="footer-links">
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/terms">Terms & Conditions</Link></li>
+                <li>
+                  <button
+                    onClick={showVendorModal}
+                    className="footer-link-button"
+                  >
+                    Become a Partner
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact Info */}
+            <div className="footer-section">
+              <h4 className="footer-heading">Contact Us</h4>
+              <ul className="footer-contact">
+                <li>
+                  <FaEnvelope className="footer-icon" />
+                  <a href="mailto:support@busquick.co.zm">support@busquick.co.zm</a>
+                </li>
+                <li>
+                  <FaPhone className="footer-icon" />
+                  <a href="tel:+260960964433">+260 960 964 433</a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Social Media */}
+            <div className="footer-section">
+              <h4 className="footer-heading">Follow Us</h4>
+              <div className="footer-social">
+                <a
+                  href="https://www.facebook.com/BusQuickZM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="social-icon"
+                >
+                  <FaFacebook />
+                </a>
+                <a
+                  href="https://www.instagram.com/busquick_tickets?igsh=eHNxengzODQ2cThy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="social-icon"
+                >
+                  <FaInstagram />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@busquick.tickets?_r=1&_t=ZM-91BPfKe3vIa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="social-icon"
+                >
+                  <FaTiktok />
+                </a>
+                <span className="social-icon social-icon-disabled" title="Coming soon">
+                  <FaLinkedin />
+                </span>
+                <span className="social-icon social-icon-disabled" title="Coming soon">
+                  <FaXTwitter />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Bottom */}
+          <div className="footer-bottom">
+            <p>&copy; {currentYear} BusQuick. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Vendor Registration Modal */}
+      <Modal
+        title="Partner Registration"
+        open={isVendorModalVisible}
+        onCancel={handleVendorModalCancel}
+        footer={null}
+        width={600}
+        destroyOnClose={true}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinishVendorRegistration}
+          style={{ marginTop: '20px' }}
+        >
+          <Form.Item
+            label="Business Name"
+            name="name"
+            rules={[{ required: true, message: 'Please input your business name!' }]}
+          >
+            <Input placeholder="Enter your business name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Business Email"
+            name="email"
+            rules={[
+              { required: true, type: 'email', message: 'Please input a valid business email!' }
+            ]}
+          >
+            <Input placeholder="Enter your business email" />
+          </Form.Item>
+
+          <Form.Item
+            label="Contact Phone"
+            name="phone"
+            rules={[{ required: true, message: 'Please input your contact phone!' }]}
+          >
+            <Input placeholder="Enter your contact phone" />
+          </Form.Item>
+
+          <Form.Item
+            label="Business Address"
+            name="address"
+            rules={[{ required: true, message: 'Please input your business address!' }]}
+          >
+            <Input.TextArea
+              placeholder="Enter your business address"
+              rows={3}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              { min: 6, message: 'Password must be at least 6 characters' },
+            ]}
+          >
+            <Input.Password placeholder="Create a password" />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirm Password"
+            name="confirmPassword"
+            dependencies={['password']}
+            rules={[
+              { required: true, message: 'Please confirm your password!' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('The two passwords do not match!'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="Confirm your password" />
+          </Form.Item>
+
+          <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+            <Button
+              onClick={handleVendorModalCancel}
+              style={{ marginRight: 8 }}
+            >
+              Cancel
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Register as Partner
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
+  );
 }
 
-/* Add this to the parent container of your content (usually in App.jsx's main div) */
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-content {
-  flex: 1 0 auto;
-  padding-bottom: 2rem; /* Add space before footer */
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 3rem;
-}
-
-.footer-section {
-  position: relative;
-}
-
-.footer-section h3 {
-  color: #ffffff;
-  font-size: 1.25rem;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  position: relative;
-  padding-bottom: 0.75rem;
-}
-
-.footer-section h3::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 50px;
-  height: 3px;
-  background: var(--primary-light);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
-
-.footer-section:hover h3::after {
-  width: 100px;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  transition: var(--transition);
-  padding: 0.5rem;
-  border-radius: var(--border-radius);
-}
-
-.contact-item:hover {
-  transform: translateX(5px);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.contact-icon {
-  color: var(--primary-light) !important;
-  font-size: 1.25rem;
-  margin-right: 1rem;
-  transition: var(--transition);
-}
-
-.contact-item:hover .contact-icon {
-  transform: scale(1.1);
-  color: white !important;
-}
-
-.contact-text {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.9);
-  transition: var(--transition);
-}
-
-.contact-item:hover .contact-text {
-  color: white;
-}
-
-.footer a {
-  color: rgba(255, 255, 255, 0.9) !important;
-  text-decoration: none;
-  transition: var(--transition);
-  font-size: 0.95rem;
-}
-
-.footer a:hover {
-  color: var(--primary-light) !important;
-}
-
-.footer-link {
-  display: block;
-  margin-bottom: 1rem;
-  position: relative;
-  padding-left: 1.5rem;
-  color: rgba(255, 255, 255, 0.9) !important;
-  transition: var(--transition);
-}
-
-.footer-link::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  transition: var(--transition);
-  color: var(--primary-light);
-}
-
-.footer-link:hover {
-  color: white !important;
-  transform: translateX(5px);
-}
-
-.footer-link:hover::before {
-  transform: translateX(5px);
-  color: white;
-}
-
-.footer-bottom {
-  text-align: center;
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.footer-bottom p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.social-links {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.social-links a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  transition: var(--transition);
-}
-
-.social-links a:hover {
-  background: var(--primary-light);
-  transform: translateY(-3px);
-}
-
-.social-links svg {
-  width: 20px;
-  height: 20px;
-  fill: white;
-  transition: var(--transition);
-}
-
-/* Animation for links */
-@keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(10px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-.footer-section > * {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.footer-section > *:nth-child(2) { animation-delay: 0.1s; }
-.footer-section > *:nth-child(3) { animation-delay: 0.2s; }
-.footer-section > *:nth-child(4) { animation-delay: 0.3s; }
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .footer-content {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .footer {
-    padding: 3rem 0 1.5rem;
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 0 1.5rem;
-  }
-
-  .footer-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-
-  .footer-bottom {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-  }
-
-  .social-links {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer {
-    padding: 2rem 0 1rem;
-  }
-
-  .footer-content {
-    padding: 0 1rem;
-  }
-
-  .contact-item {
-    padding: 0.25rem;
-  }
-
-  .social-links a {
-    width: 35px;
-    height: 35px;
-  }
-
-  .social-links svg {
-    width: 18px;
-    height: 18px;
-  }
-}
+export default Footer;
