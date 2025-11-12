@@ -48,104 +48,97 @@ function Footer() {
   return (
     <>
       <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3>Contact Us</h3>
-            <div className="contact-item">
-              <FaEnvelope className="contact-icon" />
-              <a href="mailto:support@busquick.co.zm">support@busquick.co.zm</a>
+        <div className="footer-container">
+          <div className="footer-content">
+            {/* Company Info */}
+            <div className="footer-section footer-brand">
+              <h3 className="footer-logo">BusQuick</h3>
+              <p className="footer-tagline">Your trusted partner for seamless bus booking across Zambia.</p>
             </div>
-            <div className="contact-item">
-              <FaPhone className="contact-icon" />
-              <a href="tel:+260960964433">+260960964433</a>
+
+            {/* Quick Links */}
+            <div className="footer-section">
+              <h4 className="footer-heading">Quick Links</h4>
+              <ul className="footer-links">
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/terms">Terms & Conditions</Link></li>
+                <li>
+                  <button
+                    onClick={showVendorModal}
+                    className="footer-link-button"
+                  >
+                    Become a Partner
+                  </button>
+                </li>
+              </ul>
             </div>
-          </div>
 
-          <div className="footer-section">
-            <h3>Quick Links</h3>
-            <Link to="/about" className="footer-link">About Us</Link>
-            <Link to="/terms" className="footer-link">Terms & Conditions</Link>
-          </div>
+            {/* Contact Info */}
+            <div className="footer-section">
+              <h4 className="footer-heading">Contact Us</h4>
+              <ul className="footer-contact">
+                <li>
+                  <FaEnvelope className="footer-icon" />
+                  <a href="mailto:support@busquick.co.zm">support@busquick.co.zm</a>
+                </li>
+                <li>
+                  <FaPhone className="footer-icon" />
+                  <a href="tel:+260960964433">+260 960 964 433</a>
+                </li>
+              </ul>
+            </div>
 
-          <div className="footer-section">
-            <h3>Become Partners</h3>
-            <button
-              onClick={showVendorModal}
-              className="footer-link"
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'inherit',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                padding: 0,
-                font: 'inherit'
-              }}
-            >
-              Become a Partner
-            </button>
-          </div>
-
-          <div className="footer-section">
-            <h3>Follow Us On</h3>
-            <div className="social-links">
-              <a
-                href="https://www.facebook.com/BusQuickZM"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="social-link"
-              >
-                <FaFacebook />
-              </a>
-              <a
-                href="https://www.instagram.com/busquick_tickets?igsh=eHNxengzODQ2cThy"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="social-link"
-              >
-                <FaInstagram />
-              </a>
-              <a
-                href="https://www.tiktok.com/@busquick.tickets?_r=1&_t=ZM-91BPfKe3vIa"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="tiktok"
-                className="social-link"
-              >
-                <FaTiktok />
-              </a>
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                aria-label="LinkedIn"
-                className="social-link social-link-disabled"
-                title="Coming soon"
-              >
-                <FaLinkedin />
-              </a>
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                aria-label="X (Twitter)"
-                className="social-link social-link-disabled"
-                title="Coming soon"
-              >
-                <FaXTwitter />
-              </a>
+            {/* Social Media */}
+            <div className="footer-section">
+              <h4 className="footer-heading">Follow Us</h4>
+              <div className="footer-social">
+                <a
+                  href="https://www.facebook.com/BusQuickZM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="social-icon"
+                >
+                  <FaFacebook />
+                </a>
+                <a
+                  href="https://www.instagram.com/busquick_tickets?igsh=eHNxengzODQ2cThy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="social-icon"
+                >
+                  <FaInstagram />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@busquick.tickets?_r=1&_t=ZM-91BPfKe3vIa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="social-icon"
+                >
+                  <FaTiktok />
+                </a>
+                <span className="social-icon social-icon-disabled" title="Coming soon">
+                  <FaLinkedin />
+                </span>
+                <span className="social-icon social-icon-disabled" title="Coming soon">
+                  <FaXTwitter />
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="footer-bottom">
-          <p>&copy; {currentYear} BusQuick. All rights reserved.</p>
+          {/* Footer Bottom */}
+          <div className="footer-bottom">
+            <p>&copy; {currentYear} BusQuick. All rights reserved.</p>
+          </div>
         </div>
       </footer>
 
       {/* Vendor Registration Modal */}
       <Modal
-        title="Registration Form"
+        title="Partner Registration"
         open={isVendorModalVisible}
         onCancel={handleVendorModalCancel}
         footer={null}
@@ -233,7 +226,7 @@ function Footer() {
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              Register as a partner
+              Register as Partner
             </Button>
           </Form.Item>
         </Form>
