@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import '../resources/topTraveled.css';
 
 const TopTraveled = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const scrollContainerRef = useRef(null);
   const autoScrollIntervalRef = useRef(null);
 
   // Detect screen size
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 600);
+      setIsMobile(window.innerWidth <= 768);
     };
     
     checkMobile();
@@ -92,219 +92,120 @@ const TopTraveled = () => {
     setCurrentIndex((prevIndex) => {
       return direction === 'left' ? prevIndex - 1 : prevIndex + 1;
     });
-    setTimeout(() => setIsAutoScrolling(true), 5000);
+    setTimeout(() => setIsAutoScrolling(true), 7000);
   };
 
   const handleDotClick = (index) => {
     setIsAutoScrolling(false);
     setCurrentIndex(totalSlides + index);
-    setTimeout(() => setIsAutoScrolling(true), 5000);
+    setTimeout(() => setIsAutoScrolling(true), 7000);
   };
 
   // Calculate which dot should be active (normalized to original array)
   const activeDotIndex = ((currentIndex % totalSlides) + totalSlides) % totalSlides;
 
   // Adjust transform percentage based on screen size
-  // For mobile (100% width slides): move 100% per slide
-  // For desktop (50% width slides): move 50% per slide
-  const transformPercentage = isMobile ? currentIndex * 100 : currentIndex * 50;
+  const cardsPerView = isMobile ? 1 : 2;
+  const transformPercentage = (currentIndex * 100) / cardsPerView;
 
   return (
-    <div style={styles.container}>
-      <h2 style={{...styles.title, color: 'green'}}>Bus Gallery</h2>
-      
-      <div style={styles.wrapper}>
-        <button 
-          style={{...styles.arrow, ...styles.arrowLeft}}
-          onClick={() => handleScroll('left')}
-          aria-label="Previous image"
-        >
-          ‹
-        </button>
-
-        <div style={styles.imagesContainer} ref={scrollContainerRef}>
-          <div 
-            style={{
-              ...styles.track,
-              transform: `translateX(-${transformPercentage}%)`,
-              transition: isTransitioning ? 'transform 1s ease-in-out' : 'none'
-            }}
+    <div className="gallery-section">
+      <div className="gallery-container">
+        <div className="gallery-header">
+          <h2 className="gallery-title">Our Fleet Gallery</h2>
+          <p className="gallery-subtitle">Experience comfort and luxury on every journey</p>
+        </div>
+        
+        <div className="gallery-wrapper">
+          <button 
+            className="gallery-arrow gallery-arrow-left"
+            onClick={() => handleScroll('left')}
+            aria-label="Previous image"
           >
-            {displayImages.map((image, index) => (
-              <div 
-                key={`${image}-${index}`} 
-                style={{
-                  ...styles.slide,
-                  minWidth: isMobile ? '100%' : '50%'
-                }}
-              >
-                <img 
-                  src={image} 
-                  alt={`Bus ${(index % totalSlides) + 1}`}
-                  style={styles.image}
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/800x500?text=Image+Not+Found';
-                  }}
-                />
-              </div>
-            ))}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+
+          <div className="gallery-viewport">
+            <div 
+              className={`gallery-track ${isTransitioning ? 'transitioning' : ''}`}
+              style={{
+                transform: `translateX(-${transformPercentage}%)`
+              }}
+            >
+              {displayImages.map((image, index) => (
+                <div 
+                  key={`${image}-${index}`} 
+                  className="gallery-slide"
+                >
+                  <div className="gallery-image-container">
+                    <img 
+                      src={image} 
+                      alt={`Fleet ${(index % totalSlides) + 1}`}
+                      className="gallery-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/800x600?text=Image+Not+Available';
+                      }}
+                    />
+                    <div className="gallery-image-overlay">
+                      <span className="gallery-image-number">{(index % totalSlides) + 1} / {totalSlides}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <button 
+            className="gallery-arrow gallery-arrow-right"
+            onClick={() => handleScroll('right')}
+            aria-label="Next image"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
 
-        <button 
-          style={{...styles.arrow, ...styles.arrowRight}}
-          onClick={() => handleScroll('right')}
-          aria-label="Next image"
-        >
-          ›
-        </button>
-      </div>
+        <div className="gallery-dots">
+          {allImages.map((_, index) => (
+            <button
+              key={index}
+              className={`gallery-dot ${index === activeDotIndex ? 'active' : ''}`}
+              onClick={() => handleDotClick(index)}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
+        </div>
 
-      <div style={styles.dotsContainer}>
-        {allImages.map((_, index) => (
-          <button
-            key={index}
-            style={{
-              ...styles.dot,
-              ...(index === activeDotIndex ? styles.dotActive : {})
-            }}
-            onClick={() => handleDotClick(index)}
-            aria-label={`Go to image ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      <div style={styles.controls}>
-        <button 
-          style={styles.toggleButton}
-          onClick={() => setIsAutoScrolling(!isAutoScrolling)}
-        >
-          {isAutoScrolling ? '⏸ Pause' : '▶ Play'}
-        </button>
+        <div className="gallery-controls">
+          <button 
+            className="gallery-toggle-button"
+            onClick={() => setIsAutoScrolling(!isAutoScrolling)}
+          >
+            {isAutoScrolling ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="3" y="2" width="3" height="12" fill="currentColor" rx="1"/>
+                  <rect x="10" y="2" width="3" height="12" fill="currentColor" rx="1"/>
+                </svg>
+                <span>Pause</span>
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 2L14 8L4 14V2Z" fill="currentColor"/>
+                </svg>
+                <span>Play</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    width: '100%',
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '40px 20px',
-    fontFamily: 'system-ui, -apple-system, sans-serif'
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
-    marginBottom: '30px',
-    color: '#333',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)'
-  },
-  wrapper: {
-    position: 'relative',
-    width: '100%',
-    height: '450px',
-    overflow: 'hidden',
-    borderRadius: '15px',
-    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)',
-    backgroundColor: '#ffffff'
-  },
-  imagesContainer: {
-    width: '100%',
-    height: '100%',
-    position: 'relative'
-  },
-  track: {
-    display: 'flex',
-    height: '100%'
-  },
-  slide: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '15px',
-    boxSizing: 'border-box',
-    flexShrink: 0
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    maxWidth: '600px',
-    maxHeight: '400px',
-    objectFit: 'contain',
-    objectPosition: 'center',
-    borderRadius: '10px',
-    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)'
-  },
-  arrow: {
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'rgba(0, 0, 0, 0.6)',
-    color: 'white',
-    border: 'none',
-    width: '50px',
-    height: '50px',
-    borderRadius: '50%',
-    fontSize: '2rem',
-    cursor: 'pointer',
-    zIndex: 10,
-    transition: 'all 0.3s ease',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  arrowLeft: {
-    left: '20px'
-  },
-  arrowRight: {
-    right: '20px'
-  },
-  dotsContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '10px',
-    marginTop: '20px',
-    flexWrap: 'wrap',
-    maxHeight: '100px',
-    overflowY: 'auto',
-    padding: '10px'
-  },
-  dot: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    border: '2px solid #666',
-    background: 'transparent',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    padding: 0,
-    flexShrink: 0
-  },
-  dotActive: {
-    background: '#666',
-    transform: 'scale(1.3)'
-  },
-  controls: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: '20px'
-  },
-  toggleButton: {
-    background: 'rgba(100, 100, 100, 0.9)',
-    color: 'white',
-    border: 'none',
-    padding: '10px 20px',
-    borderRadius: '25px',
-    fontSize: '1rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
-  }
 };
 
 export default TopTraveled;
