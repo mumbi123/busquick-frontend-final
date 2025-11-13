@@ -26,7 +26,7 @@ function Login({ onSuccess, isModal = false, onSwitchToRegister }) {
       // Initialize Google Sign-In
       if (window.google) {
         window.google.accounts.id.initialize({
-          client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your actual Google Client ID
+          client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
           callback: handleGoogleResponse,
         });
       }
