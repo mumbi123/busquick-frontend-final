@@ -2523,3 +2523,109 @@ footer {
     display: none !important;
   }
 }
+/* Mobile centering fixes */
+@media (max-width: 768px) {
+  /* Center the entire hero content on mobile */
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  /* Center search card container */
+  .hero-content .bus-search-container,
+  .hero-content > div:last-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 1rem auto 0 auto;
+    padding: 1.5rem 1rem;
+  }
+
+  /* Center search form */
+  .bus-search-card,
+  .search-form-container,
+  .bus-search-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Center form elements */
+  .search-form-container .ant-form,
+  .bus-search-wrapper .ant-form,
+  .search-form-container form,
+  .bus-search-wrapper form {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .search-form-container .ant-form-item,
+  .bus-search-wrapper .ant-form-item,
+  .search-form-container .form-group,
+  .bus-search-wrapper .form-group {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  /* Center search button */
+  .search-form-container .search-button,
+  .bus-search-wrapper .search-button,
+  .search-form-container button[type="submit"],
+  .bus-search-wrapper button[type="submit"] {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Center guest actions */
+  .guest-actions {
+    width: 100%;
+    text-align: center;
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+
+  .guest-actions-text {
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Center guest notice */
+  .guest-notice {
+    width: 100%;
+    margin: 0 auto 1rem auto;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Center guest encouragement */
+  .guest-encouragement {
+    width: 100%;
+    text-align: center;
+    margin: 1rem auto;
+  }
+
+  .guest-encouragement p {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content .bus-search-container,
+  .hero-content > div:last-child {
+    width: 100% !important;
+    left: 0 !important;
+    padding: 1rem 0.75rem;
+  }
+}
