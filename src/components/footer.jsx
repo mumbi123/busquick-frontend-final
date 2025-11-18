@@ -79,7 +79,7 @@ function Footer() {
               <ul className="footer-contact">
                 <li>
                   <FaEnvelope className="footer-icon" />
-                  <a href="mailto:support@busquick.co.zm">support@busquick.co.zm</a>
+                  <a href="mailto:support@busquick.co.zm">infobusquick@gmail.com</a>
                 </li>
                 <li>
                   <FaPhone className="footer-icon" />
