@@ -30,13 +30,25 @@ body, html {
   z-index: 1050;
 }
 
+/* Modal Positioning - Top Center */
+.auth-modal-wrapper .ant-modal-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+}
+
 .auth-modal {
   max-width: 450px !important;
+  top: 0 !important;
+  padding-bottom: 0;
 }
 
 .auth-modal .ant-modal {
   max-width: 450px;
   width: 100% !important;
+  top: 0 !important;
+  transform-origin: center top;
 }
 
 .auth-modal .ant-modal-content {
@@ -53,6 +65,13 @@ body, html {
   padding: 0;
   margin: 0;
   overflow: hidden;
+}
+
+/* Remove default centering */
+.auth-modal-wrapper .ant-modal-centered {
+  display: flex;
+  align-items: flex-start !important;
+  justify-content: center;
 }
 
 /* Modal Mask */
@@ -742,8 +761,13 @@ body, html {
    ======================================== */
 
 @media (max-width: 768px) {
+  /* Responsive modal positioning */
+  .auth-modal-wrapper .ant-modal-wrap {
+    padding-top: 60px;
+  }
+
   .auth-modal .ant-modal-content {
-    margin: 1rem;
+    margin: 0 1rem;
     max-width: calc(100vw - 2rem);
   }
 
@@ -795,8 +819,13 @@ body, html {
 }
 
 @media (max-width: 480px) {
+  /* Responsive modal positioning */
+  .auth-modal-wrapper .ant-modal-wrap {
+    padding-top: 40px;
+  }
+
   .auth-modal .ant-modal-content {
-    margin: 0.5rem;
+    margin: 0 0.5rem;
     max-width: calc(100vw - 1rem);
   }
 
