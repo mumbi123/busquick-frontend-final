@@ -30,17 +30,29 @@ body, html {
   z-index: 1050;
 }
 
+.auth-modal {
+  max-width: 450px !important;
+}
+
+.auth-modal .ant-modal {
+  max-width: 450px;
+  width: 100% !important;
+}
+
 .auth-modal .ant-modal-content {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
   border: none;
   padding: 0;
+  max-width: 450px;
+  width: 100%;
 }
 
 .auth-modal .ant-modal-body {
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 /* Modal Mask */
@@ -106,12 +118,17 @@ body, html {
   border-radius: 16px;
   padding: 2rem;
   min-height: 400px;
+  max-width: 450px;
+  width: 100%;
+  margin: 0 auto;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* For dropdown version */
 .auth-dropdown-card {
   width: 400px;
+  max-width: 400px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
@@ -270,6 +287,8 @@ body, html {
 .auth-container form {
   position: relative;
   z-index: 5;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Form Items */
@@ -277,6 +296,8 @@ body, html {
 .auth-container .ant-form-item,
 .auth-form-group {
   margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-dropdown-card .ant-form-item-label > label,
@@ -307,6 +328,7 @@ body, html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
   width: 100%;
   color: var(--text-dark);
+  box-sizing: border-box;
 }
 
 .auth-dropdown-card .ant-input:focus,
@@ -390,6 +412,7 @@ body, html {
   margin-top: 1rem;
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .auth-dropdown-card .ant-btn-primary:hover,
@@ -730,6 +753,7 @@ body, html {
 
   .auth-dropdown-card {
     width: 340px;
+    max-width: 340px;
     padding: 1.5rem;
     min-height: 350px;
   }
@@ -782,6 +806,7 @@ body, html {
 
   .auth-dropdown-card {
     width: 300px;
+    max-width: 300px;
     padding: 1.25rem;
     min-height: 320px;
   }
