@@ -14,7 +14,7 @@ const Notification = ({ message, type, onTryAgain, onCancel, show }) => {
       <div className={`notification ${type}`}>
         <div className="notification-content">
           <div className="notification-icon">
-            {type === 'error' ? '' : type === 'success' ? '✅' : 'ℹ️'}
+            {type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}
           </div>
           <p>{message}</p>
           <div className="notification-actions">
@@ -90,6 +90,7 @@ const Payment = () => {
   const pollingIntervalRef = useRef(null);
   const isCancelledRef = useRef(false);
   const paymentAbortControllerRef = useRef(null);
+  const lencoPaymentInstanceRef = useRef(null);
   
   // Notification state
   const [notification, setNotification] = useState({
@@ -163,20 +164,32 @@ const Payment = () => {
 
   // Cleanup function
   const cleanupPaymentProcess = () => {
+    console.log('🧹 Cleaning up payment process...');
+    
     // Stop polling
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
+      console.log('✅ Polling stopped');
     }
     
     // Abort any ongoing API requests
     if (paymentAbortControllerRef.current) {
       paymentAbortControllerRef.current.abort();
       paymentAbortControllerRef.current = null;
+      console.log('✅ API requests aborted');
     }
     
-    // Reset cancellation flag
-    isCancelledRef.current = false;
+    // Try to close Lenco payment modal if it's open
+    if (lencoPaymentInstanceRef.current && typeof lencoPaymentInstanceRef.current.close === 'function') {
+      try {
+        lencoPaymentInstanceRef.current.close();
+        console.log('✅ Lenco modal closed');
+      } catch (err) {
+        console.log('⚠️ Could not close Lenco modal:', err.message);
+      }
+    }
+    lencoPaymentInstanceRef.current = null;
   };
 
   useEffect(() => {
@@ -188,7 +201,9 @@ const Payment = () => {
       });
 
     return () => {
+      console.log('🔄 Component unmounting - cleaning up');
       cleanupPaymentProcess();
+      isCancelledRef.current = true;
     };
   }, []);
 
@@ -263,28 +278,43 @@ const Payment = () => {
     };
 
     try {
-      window.LencoPay.getPaid({
+      const paymentInstance = window.LencoPay.getPaid({
         ...paymentData,
         onSuccess: async (response) => {
-          if (isCancelledRef.current) return;
+          if (isCancelledRef.current) {
+            console.log('❌ Payment success ignored - already cancelled');
+            return;
+          }
           setLoading(false);
           await handlePaymentSuccess(response);
         },
         onClose: async () => {
-          if (isCancelledRef.current) return;
+          if (isCancelledRef.current) {
+            console.log('❌ Payment close ignored - already cancelled');
+            return;
+          }
+          console.log('🚪 User closed payment modal');
           setLoading(false);
           await handlePaymentCancellation(ref);
         },
         onConfirmationPending: () => {
-          if (isCancelledRef.current) return;
+          if (isCancelledRef.current) {
+            console.log('❌ Confirmation pending ignored - already cancelled');
+            return;
+          }
+          console.log('⏳ Payment confirmation pending');
           setLoading(false);
           setPaymentStatus('pay-offline');
           showNotification('Please authorize the payment on your mobile phone.', 'info');
           startPolling(ref);
         },
       });
+      
+      // Store the payment instance reference
+      lencoPaymentInstanceRef.current = paymentInstance;
+      
     } catch (err) {
-      console.error('LencoPay.getPaid failed:', err);
+      console.error('❌ LencoPay.getPaid failed:', err);
       setLoading(false);
       setPaymentStatus(null);
       showNotification('Failed to open payment window. Please try again.', 'error', true);
@@ -292,44 +322,70 @@ const Payment = () => {
   };
 
   const handlePaymentCancellation = async (ref) => {
-    // Immediately stop all processes
+    console.log('🛑 PAYMENT CANCELLATION INITIATED for ref:', ref);
+    
+    // CRITICAL: Set cancellation flag FIRST before any other operations
     isCancelledRef.current = true;
+    
+    // Immediately stop all processes
     cleanupPaymentProcess();
     
+    // Update UI state
     setPaymentStatus('cancelled');
     setReference(null);
     setOtp('');
+    setLoading(false);
     
     // Show immediate cancellation message
     showNotification(
       'Payment cancelled. All payment processes have been stopped. No further prompts will be sent to your phone.',
       'error',
-      true
+      false
     );
 
-    // Notify backend about cancellation
+    // Notify backend about cancellation IMMEDIATELY (don't wait)
+    // Use a new AbortController for this specific request
+    const cancelController = new AbortController();
+    
     try {
-      await axios.post(`${API_BASE_URL}/api/payment/cancel`, 
+      // Fire and forget - don't await this
+      axios.post(`${API_BASE_URL}/api/payment/cancel`, 
         { reference: ref }, 
         {
           headers: { 'Content-Type': 'application/json' },
-          signal: paymentAbortControllerRef.current?.signal
+          signal: cancelController.signal,
+          timeout: 3000 // Short timeout
         }
-      );
-      console.log('Payment cancellation confirmed for reference:', ref);
+      ).then(() => {
+        console.log('✅ Payment cancellation confirmed by backend for reference:', ref);
+      }).catch((err) => {
+        if (err.name !== 'AbortError') {
+          console.log('⚠️ Backend cancellation notification may have failed, but local state is cancelled');
+        }
+      });
     } catch (err) {
-      console.log('Cancellation notification sent (backend may process it asynchronously)');
+      console.log('⚠️ Cancellation notification initiated');
     }
 
     // Clear any pending booking data
     localStorage.removeItem('pendingBooking');
     
     // Navigate after short delay
-    setTimeout(() => navigate('/'), 5000);
+    setTimeout(() => {
+      if (isCancelledRef.current) {
+        console.log('🏠 Navigating to home after cancellation');
+        navigate('/', { replace: true });
+      }
+    }, 3000);
   };
 
   const handlePaymentSuccess = async (response) => {
-    if (isCancelledRef.current) return;
+    if (isCancelledRef.current) {
+      console.log('❌ Payment success handler blocked - payment was cancelled');
+      return;
+    }
+
+    console.log('✅ Payment success callback triggered:', response);
 
     try {
       const verifyResponse = await fetch(
@@ -357,20 +413,27 @@ const Payment = () => {
       }
     } catch (err) {
       if (err.name === 'AbortError') {
-        console.log('Payment verification aborted');
+        console.log('❌ Payment verification aborted');
         return;
       }
-      console.error('Verification error:', err);
+      console.error('❌ Verification error:', err);
       showNotification('Payment verification failed. Please try again.', 'error', true);
       setPaymentStatus(null);
     }
   };
 
   const createBooking = async (transactionId, channel = null) => {
-    if (isCancelledRef.current || !bus || !seats?.length || !totalPrice || !passengerDetails) {
+    if (isCancelledRef.current) {
+      console.log('❌ Booking creation blocked - payment was cancelled');
+      return;
+    }
+    
+    if (!bus || !seats?.length || !totalPrice || !passengerDetails) {
       showNotification('Booking data incomplete. Contact support with ref: ' + transactionId, 'error', true);
       return;
     }
+
+    console.log('📝 Creating booking with transaction:', transactionId);
 
     try {
       const token = localStorage.getItem('token');
@@ -410,28 +473,33 @@ const Payment = () => {
         localStorage.removeItem('pendingBooking');
         cleanupPaymentProcess();
         showNotification('Payment and booking successful!', 'success');
+        console.log('✅ Booking created successfully');
         setTimeout(() => navigate('/bookings'), 3000);
       } else {
         throw new Error(bookingResponse.data.message || 'Booking creation failed');
       }
     } catch (bookingErr) {
       if (bookingErr.name === 'AbortError') {
-        console.log('Booking creation aborted');
+        console.log('❌ Booking creation aborted');
         return;
       }
-      console.error('Booking creation error:', bookingErr);
+      console.error('❌ Booking creation error:', bookingErr);
       showNotification(`Payment succeeded, but booking failed. Contact support with ref: ${transactionId}`, 'error', true);
     }
   };
 
   const submitOtp = async () => {
-    if (isCancelledRef.current) return;
+    if (isCancelledRef.current) {
+      console.log('❌ OTP submission blocked - payment was cancelled');
+      return;
+    }
     
     if (!/^\d{4,6}$/.test(otp)) {
       showNotification('OTP must be 4-6 digits', 'error');
       return;
     }
 
+    console.log('🔐 Submitting OTP for reference:', reference);
     setLoading(true);
     hideNotification();
 
@@ -462,10 +530,10 @@ const Payment = () => {
       }
     } catch (err) {
       if (err.name === 'AbortError') {
-        console.log('OTP submission aborted');
+        console.log('❌ OTP submission aborted');
         return;
       }
-      console.error('OTP submission error:', err);
+      console.error('❌ OTP submission error:', err);
       showNotification('OTP submission failed. Please try again.', 'error', true);
       setPaymentStatus('pending');
       startPolling(reference);
@@ -476,10 +544,21 @@ const Payment = () => {
   };
 
   const startPolling = (ref) => {
-    if (isCancelledRef.current || pollingIntervalRef.current) return;
+    if (isCancelledRef.current) {
+      console.log('❌ Polling blocked - payment was cancelled');
+      return;
+    }
+    
+    if (pollingIntervalRef.current) {
+      console.log('⚠️ Polling already active');
+      return;
+    }
+    
+    console.log('🔄 Starting payment status polling for ref:', ref);
     
     const interval = setInterval(() => {
       if (isCancelledRef.current) {
+        console.log('❌ Stopping polling - payment was cancelled');
         clearInterval(interval);
         return;
       }
@@ -491,6 +570,7 @@ const Payment = () => {
     // Auto-stop polling after 5 minutes
     setTimeout(() => {
       if (pollingIntervalRef.current === interval) {
+        console.log('⏱️ Polling timeout reached (5 minutes)');
         stopPolling();
         if (!isCancelledRef.current && (paymentStatus === 'pending' || paymentStatus === 'pay-offline')) {
           showNotification(
@@ -506,6 +586,7 @@ const Payment = () => {
 
   const stopPolling = () => {
     if (pollingIntervalRef.current) {
+      console.log('🛑 Stopping polling');
       clearInterval(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
     }
@@ -513,6 +594,7 @@ const Payment = () => {
 
   const verifyPayment = async (ref) => {
     if (isCancelledRef.current) {
+      console.log('❌ Verification blocked - payment was cancelled');
       stopPolling();
       return;
     }
@@ -529,6 +611,7 @@ const Payment = () => {
       }
 
       const status = data.data?.data?.status;
+      console.log('🔍 Verification status:', status);
 
       if (status === 'successful') {
         await createBooking(ref);
@@ -548,10 +631,10 @@ const Payment = () => {
       }
     } catch (err) {
       if (err.name === 'AbortError') {
-        console.log('Payment verification aborted');
+        console.log('❌ Payment verification aborted');
         return;
       }
-      console.error('Verification error:', err);
+      console.error('❌ Verification error:', err);
     }
   };
 
@@ -561,13 +644,16 @@ const Payment = () => {
   };
 
   const handleTryAgain = () => {
+    console.log('🔄 User clicked Try Again');
     hideNotification();
     setPaymentStatus(null);
     setLoading(false);
     isCancelledRef.current = false;
+    cleanupPaymentProcess();
   };
 
   const handleCancel = async () => {
+    console.log('🛑 User clicked Cancel button');
     if (reference) {
       await handlePaymentCancellation(reference);
     } else {
@@ -578,9 +664,9 @@ const Payment = () => {
       showNotification(
         'Payment cancelled. No further notifications will be sent.',
         'error',
-        true
+        false
       );
-      setTimeout(() => navigate('/'), 3000);
+      setTimeout(() => navigate('/', { replace: true }), 3000);
     }
   };
 
@@ -677,7 +763,7 @@ const Payment = () => {
                 </>
               ) : (
                 <>
-                  <span className="pay-icon"></span>
+                  <span className="pay-icon">💳</span>
                   Pay with Lenco
                 </>
               )}
@@ -698,6 +784,12 @@ const Payment = () => {
               <div className="pending-icon">📱</div>
               <h3>Authorization Required</h3>
               <p>Please check your phone and authorize the payment</p>
+              <button 
+                className="cancel-payment-button"
+                onClick={() => handlePaymentCancellation(reference)}
+              >
+                Cancel Payment
+              </button>
             </div>
           )}
 
