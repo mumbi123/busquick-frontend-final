@@ -15,20 +15,20 @@ const PDFTicket = ({ booking, onDownload }) => {
     setDownloading(true);
 
     try {
-      const pdfBlob = await toPDF();
-      const url = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `busquick-ticket-${booking._id?.slice(0, 8)}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      // Show a confirmation message before generating PDF
+      const confirmed = window.confirm('Click OK to complete the download');
+      
+      if (!confirmed) {
+        setDownloading(false);
+        return;
+      }
+
+      await toPDF();
 
       if (onDownload) onDownload();
     } catch (err) {
       console.error('PDF generation failed:', err);
-      alert('Sorry, the ticket could not be generated.');
+      alert('Sorry, the ticket could not be generated. Please try again.');
     } finally {
       setDownloading(false);
     }
@@ -170,7 +170,7 @@ const PDFTicket = ({ booking, onDownload }) => {
     );
     
     return rows;
-  };
+  }; 
 
   return (
     <>
@@ -266,7 +266,7 @@ const PDFTicket = ({ booking, onDownload }) => {
           {/* Footer */}
           <div className="ticket-footer">
             <div className="footer-info">
-              <strong>Important:</strong> Please arrive 30 to 45 minutes before departure. Present this ticket at boarding. For inquiries: support@busquick.com or +260960964433
+              <strong>Important:</strong> Please arrive 30 to 45 minutes before departure. Present this ticket at boarding. For inquiries: infobusquick@gmail.com or +260960964433
             </div>
             <div className="footer-status">
               Status: <strong>PAID</strong>
